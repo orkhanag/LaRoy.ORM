@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,11 +7,10 @@
     <Title>LaRoy</Title>
     <Authors>orkhannag</Authors>
     <Description>An awsome free ORM.</Description>
+    <Version>1.0.1-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.33" />
-    <PackageReference Include="Npgsql" Version="7.0.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 

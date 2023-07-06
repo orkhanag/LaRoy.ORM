@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Common;
 
 namespace LaRoy.Mapper.BulkOperations.Utils
 {
     public abstract class LaRoyDbContext
     {
-        private readonly SqlConnection _connection;
-        public LaRoyDbContext(string connectionString)
+        private readonly DbConnection _connection;
+        public LaRoyDbContext()
         {
-                _connection = new SqlConnection(connectionString);
+            _connection = CreateConnection();
         }
 
-        public SqlConnection GetConnection()
+        public DbConnection GetConnection()
         {
             return _connection;
         }
+
+        public abstract DbConnection CreateConnection();
     }
 }
