@@ -2,11 +2,9 @@
 using LaRoy.ORM.Utils;
 using MySql.Data.MySqlClient;
 using Npgsql;
-using NpgsqlTypes;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Net;
 
 namespace LaRoy.ORM.BulkOperations
 {
@@ -62,6 +60,8 @@ namespace LaRoy.ORM.BulkOperations
                     {
                         MySqlCommandBuilder commandBuilder = new MySqlCommandBuilder(dataAdapter);
 
+                        dataAdapter.SelectCommand = mySqlConnection.CreateCommand();
+                        dataAdapter.SelectCommand.CommandText = $"SELECT * FROM {tableName}";
                         dataAdapter.InsertCommand = commandBuilder.GetInsertCommand();
 
                         // Perform the bulk insert

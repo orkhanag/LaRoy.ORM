@@ -1,8 +1,5 @@
-﻿using NpgsqlTypes;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Net;
-using System.Reflection;
 
 namespace LaRoy.ORM.Utils
 {
@@ -46,5 +43,4 @@ namespace LaRoy.ORM.Utils
             throw new NotSupportedException($"Type {typeof(T).Name} doesn't have 'Key' field!");
         }
     }
-
 }

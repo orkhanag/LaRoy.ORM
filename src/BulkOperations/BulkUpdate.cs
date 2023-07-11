@@ -2,7 +2,9 @@
 using LaRoy.ORM.Utils;
 using System.Data.Common;
 using LaRoy.Mapper.BulkOperations.Utils;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Npgsql;
+using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace LaRoy.ORM.BulkOperations
 {
@@ -12,14 +14,15 @@ namespace LaRoy.ORM.BulkOperations
         {
             var tableName = typeof(T).Name;
             var dataTable = data.ToDataTable();
+            connection.Open();
 
             if (connection is SqlConnection sqlConnection)
             {
-                using (SqlCommand command = new SqlCommand("", sqlConnection))
+                using (DbCommand command = sqlConnection.GetSpecificCommandType())
                 {
                     try
                     {
-                        DatabaseManupulations.CreateTemporaryTable<T>(sqlConnection, "#TmpTable");
+                        sqlConnection.CreateTemporaryTable<T>("#TmpTable");
 
                         //Bulk insert into temp table
                         using (SqlBulkCopy bulkcopy = new SqlBulkCopy(sqlConnection))
@@ -34,9 +37,7 @@ namespace LaRoy.ORM.BulkOperations
                         var columnValues = string.Empty;
 
                         foreach (var prop in properties)
-                        {
                             columnValues += $"{prop.Name} = tmp.{prop.Name},";
-                        }
 
                         var keyFieldName = data.First().GetKeyFieldName();
 
@@ -46,6 +47,103 @@ namespace LaRoy.ORM.BulkOperations
                                                 {columnValues.Trim(',')}
                                                 FROM #TmpTable AS tmp
                                                 WHERE {tableName}.{keyFieldName} = tmp.{keyFieldName}";
+                        command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+            else if (connection is NpgsqlConnection npgSqlConnection)
+            {
+                using (DbCommand command = npgSqlConnection.GetSpecificCommandType())
+                {
+                    try
+                    {
+                        npgSqlConnection.CreateTemporaryTable<T>("#TmpTable");
+
+                        //Bulk insert into temp table
+                        using (var binaryImporter = npgSqlConnection.BeginBinaryImport($"COPY TmpTable FROM STDIN (FORMAT BINARY)"))
+                        {
+                            foreach (DataRow row in dataTable.Rows)
+                            {
+                                binaryImporter.StartRow();
+
+                                foreach (DataColumn column in dataTable.Columns)
+                                {
+                                    var value = row[column.ColumnName];
+                                    var type = column.DataType.GetNpgsqlDbType();
+                                    binaryImporter.Write(value, type);
+                                }
+                            }
+                            binaryImporter.Complete();
+                        }
+
+                        var properties = typeof(T).GetProperties();
+                        var columnValues = string.Empty;
+
+                        foreach (var prop in properties)
+                            columnValues += $"{prop.Name} = tmp.{prop.Name},";
+
+                        var keyFieldName = data.First().GetKeyFieldName();
+
+                        // Updating destination table, and dropping temp table
+                        command.CommandTimeout = 300;
+                        command.CommandText = $@"UPDATE {tableName} SET
+                                                {columnValues.Trim(',')}
+                                                FROM TmpTable AS tmp
+                                                WHERE {tableName}.{keyFieldName} = tmp.{keyFieldName}";
+                        command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+            else if (connection is MySqlConnection mySqlConnection)
+            {
+                using (DbCommand command = mySqlConnection.GetSpecificCommandType())
+                {
+                    try
+                    {
+                        mySqlConnection.CreateTemporaryTable<T>("#TmpTable");
+
+                        //Bulk insert into temp table
+                        using (MySqlDataAdapter dataAdapter = new MySqlDataAdapter())
+                        {
+                            MySqlCommandBuilder commandBuilder = new MySqlCommandBuilder(dataAdapter);
+
+                            dataAdapter.SelectCommand = mySqlConnection.CreateCommand();
+                            dataAdapter.SelectCommand.CommandText = $"SELECT * FROM TmpTable";
+                            dataAdapter.InsertCommand = commandBuilder.GetInsertCommand();
+
+                            // Perform the bulk insert
+                            dataAdapter.Update(dataTable);
+                        }
+
+                        var properties = typeof(T).GetProperties();
+                        var columnValues = string.Empty;
+
+                        foreach (var prop in properties)
+                            columnValues += $"dest.{prop.Name} = src.{prop.Name},";
+
+                        var keyFieldName = data.First().GetKeyFieldName();
+
+                        // Updating destination table, and dropping temp table
+                        command.CommandTimeout = 300;
+                        command.CommandText = $@"UPDATE {tableName} dest, TmpTable src SET
+                                                {columnValues.Trim(',')}
+                                              WHERE dest.{keyFieldName}=src.{keyFieldName}";
                         command.ExecuteNonQuery();
                     }
                     catch (Exception ex)
