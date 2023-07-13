@@ -16,63 +16,46 @@ namespace LaRoy.ORM.BulkOperations
             try
             {
                 var tableName = typeof(T).Name;
-
                 var dataTable = data.ToDataTable();
-
                 if (connection.State != ConnectionState.Open)
                     connection.Open();
-
-                // Create the data adapter and insert the data
                 if (connection is SqlConnection sqlConnection)
                 {
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConnection))
-                    {
-                        bulkCopy.DestinationTableName = tableName;
-
-                        // Map the columns in the DataTable to the destination table columns
-                        for (int i = 0; i < dataTable.Columns.Count; i++)
-                            bulkCopy.ColumnMappings.Add(i, i);
-
-                        bulkCopy.WriteToServer(dataTable);
-                    }
+                    using SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConnection);
+                    bulkCopy.DestinationTableName = tableName;
+                    for (int i = 0; i < dataTable.Columns.Count; i++)
+                        bulkCopy.ColumnMappings.Add(i, i);
+                    bulkCopy.WriteToServer(dataTable);
                 }
                 else if (connection is NpgsqlConnection npgConnection)
                 {
-                    using (var binaryImporter = npgConnection.BeginBinaryImport($"COPY {tableName} FROM STDIN (FORMAT BINARY)"))
+                    using var binaryImporter = npgConnection.BeginBinaryImport($"COPY {tableName} FROM STDIN (FORMAT BINARY)");
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        foreach (DataRow row in dataTable.Rows)
+                        binaryImporter.StartRow();
+                        foreach (DataColumn column in dataTable.Columns)
                         {
-                            binaryImporter.StartRow();
-
-                            foreach (DataColumn column in dataTable.Columns)
-                            {
-                                var value = row[column.ColumnName];
-                                var type = column.DataType.GetNpgsqlDbType();
-                                binaryImporter.Write(value, type);
-                            }
+                            var value = row[column.ColumnName];
+                            var type = column.DataType.GetNpgsqlDbType();
+                            binaryImporter.Write(value, type);
                         }
-                        binaryImporter.Complete();
                     }
+                    binaryImporter.Complete();
                 }
                 else if (connection is MySqlConnection mySqlConnection)
                 {
-                    using (MySqlDataAdapter dataAdapter = new MySqlDataAdapter())
-                    {
-                        MySqlCommandBuilder commandBuilder = new MySqlCommandBuilder(dataAdapter);
-
-                        dataAdapter.SelectCommand = mySqlConnection.CreateCommand();
-                        dataAdapter.SelectCommand.CommandText = $"SELECT * FROM {tableName}";
-                        dataAdapter.InsertCommand = commandBuilder.GetInsertCommand();
-
-                        // Perform the bulk insert
-                        dataAdapter.Update(dataTable);
-                    }
+                    using MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
+                    MySqlCommandBuilder commandBuilder = new MySqlCommandBuilder(dataAdapter);
+                    dataAdapter.SelectCommand = mySqlConnection.CreateCommand();
+                    dataAdapter.SelectCommand.CommandText = $"SELECT * FROM {tableName}";
+                    dataAdapter.InsertCommand = commandBuilder.GetInsertCommand();
+                    dataAdapter.Update(dataTable);
                 }
                 return dataTable.Rows.Count;
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
             finally
             {

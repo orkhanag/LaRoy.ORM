@@ -1,6 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient.X.XDevAPI.Common;
 using Npgsql;
 using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Net;
@@ -9,35 +11,36 @@ namespace LaRoy.ORM.Utils
 {
     public static class DatabaseManupulations
     {
-        private static string GenerateCreateTableQuery<T>(string tableName, DbConnection connection)
+        private static string GenerateCreateTableQuery<T>(string tableName, DbConnection connection, bool onlyKeyField = false)
         {
             var properties = typeof(T).GetProperties();
-
-            List<string> columnDefinitions = new();
-            foreach (var property in properties)
+            string columnDefinitionsStr = string.Empty;
+            if (onlyKeyField)
+                foreach (var property in properties)
+                    if (property.GetCustomAttributes(false).Where(x => x is KeyAttribute).Any())
+                        columnDefinitionsStr = $"{property.Name} {property.PropertyType.GetDbTypeAsString(connection)}";
+                    else
+                        throw new NotSupportedException($"Type {typeof(T).Name} doesn't have 'Key' field!");
+            else 
             {
-                string columnName = property.Name;
-                string columnType = property.PropertyType.GetDbTypeAsString(connection);
+                List<string> columnDefinitions = new();
+                foreach (var property in properties)
+                    columnDefinitions.Add($"{property.Name} {property.PropertyType.GetDbTypeAsString(connection)}");
 
-                columnDefinitions.Add($"{columnName} {columnType}");
+                columnDefinitionsStr = string.Join(", ", columnDefinitions);
             }
-
-            string columnDefinitionsStr = string.Join(", ", columnDefinitions);
-
             string altSyntax = string.Empty;
             if (connection is not SqlConnection)
                 altSyntax = connection is NpgsqlConnection ? "TEMP" : "TEMPORARY";
-
             string createTableQuery = $"CREATE {altSyntax} TABLE {tableName} ({columnDefinitionsStr})";
-
             return createTableQuery;
         }
 
-        public static void CreateTemporaryTable<T>(this DbConnection connection, string tableName)
+        public static void CreateTemporaryTable<T>(this DbConnection connection, string tableName, bool onlyKeyField = false)
         {
             using (DbCommand command = connection.GetSpecificCommandType())
             {
-                command.CommandText = GenerateCreateTableQuery<T>(tableName, connection);
+                command.CommandText = GenerateCreateTableQuery<T>(tableName, connection, onlyKeyField);
                 command.ExecuteNonQuery();
             }
         }
@@ -53,13 +56,13 @@ namespace LaRoy.ORM.Utils
             };
         }
 
-        public static DbCommand GetSpecificCommandType(this DbConnection connection)
+        public static DbCommand GetSpecificCommandType(this DbConnection connection, string commandText = "")
         {
             return connection switch
             {
-                SqlConnection sqlConnection => new SqlCommand("", sqlConnection),
-                NpgsqlConnection npgSqlConnection => new NpgsqlCommand("", npgSqlConnection),
-                MySqlConnection mySqlConnection => new MySqlCommand("", mySqlConnection),
+                SqlConnection sqlConnection => new SqlCommand(commandText, sqlConnection),
+                NpgsqlConnection npgSqlConnection => new NpgsqlCommand(commandText, npgSqlConnection),
+                MySqlConnection mySqlConnection => new MySqlCommand(commandText, mySqlConnection),
                 _ => throw new NotSupportedException($"This connection type({connection.GetType().Name}) is not supported!")
             };
         }
