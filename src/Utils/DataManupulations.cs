@@ -8,17 +8,13 @@ namespace LaRoy.ORM.Utils
         public static DataTable ToDataTable<T>(this IEnumerable<T> data)
         {
             var tableName = typeof(T).Name;
-            // Create a DataTable to hold the data
             DataTable dataTable = new DataTable(tableName);
 
-            // Get the properties of the type T
             var properties = typeof(T).GetProperties();
 
-            // Add columns to the DataTable based on the properties
             foreach (var property in properties)
                 dataTable.Columns.Add(property.Name, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
 
-            // Add rows to the DataTable
             foreach (var item in data)
             {
                 DataRow row = dataTable.NewRow();

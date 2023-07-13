@@ -11,11 +11,9 @@ namespace LaRoy.ORM.Utils
     {
         private static string GenerateCreateTableQuery<T>(string tableName, DbConnection connection)
         {
-            // Get the properties of the object type
             var properties = typeof(T).GetProperties();
 
-            // Generate the column definitions
-            List<string> columnDefinitions = new List<string>();
+            List<string> columnDefinitions = new();
             foreach (var property in properties)
             {
                 string columnName = property.Name;
@@ -24,15 +22,13 @@ namespace LaRoy.ORM.Utils
                 columnDefinitions.Add($"{columnName} {columnType}");
             }
 
-            // Combine the column definitions into the CREATE TABLE statement
             string columnDefinitionsStr = string.Join(", ", columnDefinitions);
-            var isNpg = connection is NpgsqlConnection;
-            var isMySql = connection is MySqlConnection;
-            var npgSpecificSyntax = isNpg ? "TEMP" : string.Empty;
-            var mySqlSpecificSyntax = isMySql ? "TEMPORARY" : string.Empty;
-            if (isNpg || isMySql)
-                tableName = tableName.Trim('#');
-            string createTableQuery = $"CREATE {(isNpg ? npgSpecificSyntax : mySqlSpecificSyntax)} TABLE {tableName} ({columnDefinitionsStr})";
+
+            string altSyntax = string.Empty;
+            if (connection is not SqlConnection)
+                altSyntax = connection is NpgsqlConnection ? "TEMP" : "TEMPORARY";
+
+            string createTableQuery = $"CREATE {altSyntax} TABLE {tableName} ({columnDefinitionsStr})";
 
             return createTableQuery;
         }

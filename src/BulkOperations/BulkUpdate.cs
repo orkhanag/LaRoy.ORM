@@ -65,7 +65,7 @@ namespace LaRoy.ORM.BulkOperations
                 {
                     try
                     {
-                        npgSqlConnection.CreateTemporaryTable<T>("#TmpTable");
+                        npgSqlConnection.CreateTemporaryTable<T>("TmpTable");
 
                         //Bulk insert into temp table
                         using (var binaryImporter = npgSqlConnection.BeginBinaryImport($"COPY TmpTable FROM STDIN (FORMAT BINARY)"))
@@ -116,7 +116,7 @@ namespace LaRoy.ORM.BulkOperations
                 {
                     try
                     {
-                        mySqlConnection.CreateTemporaryTable<T>("#TmpTable");
+                        mySqlConnection.CreateTemporaryTable<T>("TmpTable");
 
                         //Bulk insert into temp table
                         using (MySqlDataAdapter dataAdapter = new MySqlDataAdapter())
