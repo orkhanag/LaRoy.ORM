@@ -10,7 +10,7 @@ namespace LaRoy.ORM.BulkOperations
 {
     public static partial class BulkOperations
     {
-        public static void BulkUpdate<T>(this DbConnection connection, IEnumerable<T> data)
+        public static void BulkUpdate<T>(this IDbConnection connection, IEnumerable<T> data)
         {
             var tableName = typeof(T).Name;
             var dataTable = data.ToDataTable();
@@ -18,7 +18,7 @@ namespace LaRoy.ORM.BulkOperations
                 connection.Open();
             if (connection is SqlConnection sqlConnection)
             {
-                using DbCommand command = sqlConnection.GetSpecificCommandType();
+                using IDbCommand command = sqlConnection.GetSpecificCommandType();
                 try
                 {
                     sqlConnection.CreateTemporaryTable<T>("#TmpTable");
@@ -33,7 +33,7 @@ namespace LaRoy.ORM.BulkOperations
                     var columnValues = string.Empty;
                     foreach (var prop in properties)
                         columnValues += $"{prop.Name} = tmp.{prop.Name},";
-                    var keyFieldName = data.First().GetKeyField().Name;
+                    var keyFieldName = DataManupulations.GetKeyField<T>().Name;
                     command.CommandTimeout = 300;
                     command.CommandText = $@"UPDATE {tableName} SET
                                                 {columnValues.Trim(',')}
@@ -52,7 +52,7 @@ namespace LaRoy.ORM.BulkOperations
             }
             else if (connection is NpgsqlConnection npgSqlConnection)
             {
-                using DbCommand command = npgSqlConnection.GetSpecificCommandType();
+                using IDbCommand command = npgSqlConnection.GetSpecificCommandType();
                 try
                 {
                     npgSqlConnection.CreateTemporaryTable<T>("TmpTable");
@@ -75,7 +75,7 @@ namespace LaRoy.ORM.BulkOperations
                     var columnValues = string.Empty;
                     foreach (var prop in properties)
                         columnValues += $"{prop.Name} = tmp.{prop.Name},";
-                    var keyFieldName = data.First().GetKeyField().Name;
+                    var keyFieldName = DataManupulations.GetKeyField<T>().Name;
                     command.CommandTimeout = 300;
                     command.CommandText = $@"UPDATE {tableName} SET
                                                 {columnValues.Trim(',')}
@@ -94,7 +94,7 @@ namespace LaRoy.ORM.BulkOperations
             }
             else if (connection is MySqlConnection mySqlConnection)
             {
-                using DbCommand command = mySqlConnection.GetSpecificCommandType();
+                using IDbCommand command = mySqlConnection.GetSpecificCommandType();
                 try
                 {
                     mySqlConnection.CreateTemporaryTable<T>("TmpTable");
@@ -110,7 +110,7 @@ namespace LaRoy.ORM.BulkOperations
                     var columnValues = string.Empty;
                     foreach (var prop in properties)
                         columnValues += $"dest.{prop.Name} = src.{prop.Name},";
-                    var keyFieldName = data.First().GetKeyField().Name;
+                    var keyFieldName = DataManupulations.GetKeyField<T>().Name;
                     command.CommandTimeout = 300;
                     command.CommandText = $@"UPDATE {tableName} dest, TmpTable src SET
                                                 {columnValues.Trim(',')}
@@ -134,7 +134,7 @@ namespace LaRoy.ORM.BulkOperations
             connection.BulkUpdate(data);
         }
 
-        public static void BulkUpdate<T>(this DbConnection connection, T[] data)
+        public static void BulkUpdate<T>(this IDbConnection connection, T[] data)
         {
             var dataAsEnumarable = data.AsEnumerable();
             connection.BulkUpdate(dataAsEnumarable);

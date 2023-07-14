@@ -10,15 +10,17 @@ namespace LaRoy.ORM.BulkOperations
 {
     public static partial class BulkOperations
     {
-        public static int BulkInsert<T>(this DbConnection connection, IEnumerable<T> data)
+        public static int BulkInsert<T>(this IDbConnection connection, IEnumerable<T> data)
         {
-            DbProviderFactory factory = DbProviderFactories.GetFactory(connection);
             try
             {
                 var tableName = typeof(T).Name;
                 var dataTable = data.ToDataTable();
                 if (connection.State != ConnectionState.Open)
                     connection.Open();
+
+                var cc = connection.GetSpecificConnectionType();
+
                 if (connection is SqlConnection sqlConnection)
                 {
                     using SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConnection);
@@ -27,9 +29,9 @@ namespace LaRoy.ORM.BulkOperations
                         bulkCopy.ColumnMappings.Add(i, i);
                     bulkCopy.WriteToServer(dataTable);
                 }
-                else if (connection is NpgsqlConnection npgConnection)
+                else if (connection is NpgsqlConnection npgSqlConnection)
                 {
-                    using var binaryImporter = npgConnection.BeginBinaryImport($"COPY {tableName} FROM STDIN (FORMAT BINARY)");
+                    using var binaryImporter = npgSqlConnection.BeginBinaryImport($"COPY {tableName} FROM STDIN (FORMAT BINARY)");
                     foreach (DataRow row in dataTable.Rows)
                     {
                         binaryImporter.StartRow();
@@ -69,7 +71,7 @@ namespace LaRoy.ORM.BulkOperations
             return connection.BulkInsert(data);
         }
 
-        public static int BulkInsert<T>(this DbConnection connection, T[] data)
+        public static int BulkInsert<T>(this IDbConnection connection, T[] data)
         {
             var dataAsEnumerable = data.AsEnumerable();
             return BulkInsert<T>(connection, dataAsEnumerable);

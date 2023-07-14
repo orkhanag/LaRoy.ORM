@@ -16,18 +16,18 @@ namespace LaRoy.ORM.BulkOperations
 {
     public static partial class BulkOperations
     {
-        public static void BulkDelete<T>(this DbConnection connection, IEnumerable<T> data)
+        public static void BulkDelete<T>(this IDbConnection connection, IEnumerable<T> data)
         {
             connection.Open();
-            string keyFieldName = data.First().GetKeyField().Name;
-            Type keyFieldType = data.First().GetKeyField().PropertyType;
+            string keyFieldName = DataManupulations.GetKeyField<T>().Name;
+            Type keyFieldType = DataManupulations.GetKeyField<T>().PropertyType;
             string tableName = typeof(T).Name;
             string tempTableName = string.Empty;
             DataTable tempTable = new DataTable();
             tempTable.Columns.Add(keyFieldName, keyFieldType);
             foreach (var item in data)
             {
-                var id = item.GetKeyField().GetValue(item);
+                var id = DataManupulations.GetKeyField<T>().GetValue(item);
                 tempTable.Rows.Add(id);
             }
             try
@@ -67,7 +67,7 @@ namespace LaRoy.ORM.BulkOperations
                 }
                 string deleteQuery = $"DELETE FROM {tableName} WHERE [{keyFieldName}] IN (SELECT [{keyFieldName}] FROM {tempTableName})";
 
-                using DbCommand deleteCommand = connection.GetSpecificCommandType(deleteQuery);
+                using IDbCommand deleteCommand = connection.GetSpecificCommandType(deleteQuery);
                 deleteCommand.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace LaRoy.ORM.BulkOperations
             connection.BulkDelete(data);
         }
 
-        public static void BulkDelete<T>(this DbConnection connection, T[] data)
+        public static void BulkDelete<T>(this IDbConnection connection, T[] data)
         {
             var dataAsEnumerable = data.AsEnumerable();
             connection.BulkDelete(dataAsEnumerable);

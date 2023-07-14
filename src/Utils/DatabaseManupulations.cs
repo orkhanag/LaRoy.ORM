@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient.X.XDevAPI.Common;
 using Npgsql;
 using NpgsqlTypes;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Net;
@@ -11,16 +12,15 @@ namespace LaRoy.ORM.Utils
 {
     public static class DatabaseManupulations
     {
-        private static string GenerateCreateTableQuery<T>(string tableName, DbConnection connection, bool onlyKeyField = false)
+        public static string GenerateCreateTableQuery<T>(string tableName, IDbConnection connection, bool onlyKeyField = false)
         {
             var properties = typeof(T).GetProperties();
             string columnDefinitionsStr = string.Empty;
             if (onlyKeyField)
-                foreach (var property in properties)
-                    if (property.GetCustomAttributes(false).Where(x => x is KeyAttribute).Any())
-                        columnDefinitionsStr = $"{property.Name} {property.PropertyType.GetDbTypeAsString(connection)}";
-                    else
-                        throw new NotSupportedException($"Type {typeof(T).Name} doesn't have 'Key' field!");
+            {
+                var keyField = DataManupulations.GetKeyField<T>();
+                columnDefinitionsStr = $"{keyField.Name} {keyField.PropertyType.GetDbTypeAsString(connection)}";
+            }
             else 
             {
                 List<string> columnDefinitions = new();
@@ -36,7 +36,7 @@ namespace LaRoy.ORM.Utils
             return createTableQuery;
         }
 
-        public static void CreateTemporaryTable<T>(this DbConnection connection, string tableName, bool onlyKeyField = false)
+        public static void CreateTemporaryTable<T>(this IDbConnection connection, string tableName, bool onlyKeyField = false)
         {
             using (DbCommand command = connection.GetSpecificCommandType())
             {
@@ -45,7 +45,7 @@ namespace LaRoy.ORM.Utils
             }
         }
 
-        public static DbConnection GetSpecificConnectionType(this DbConnection connection)
+        public static DbConnection GetSpecificConnectionType(this IDbConnection connection)
         {
             return connection switch
             {
@@ -56,7 +56,7 @@ namespace LaRoy.ORM.Utils
             };
         }
 
-        public static DbCommand GetSpecificCommandType(this DbConnection connection, string commandText = "")
+        public static DbCommand GetSpecificCommandType(this IDbConnection connection, string commandText = "")
         {
             return connection switch
             {
@@ -67,7 +67,7 @@ namespace LaRoy.ORM.Utils
             };
         }
 
-        public static string GetDbTypeAsString(this Type dataType, DbConnection connection)
+        public static string GetDbTypeAsString(this Type dataType, IDbConnection connection)
         {
             return connection switch
             {

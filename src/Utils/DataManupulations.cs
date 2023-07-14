@@ -13,17 +13,20 @@ namespace LaRoy.ORM.Utils
             var properties = typeof(T).GetProperties();
             foreach (var property in properties)
                 dataTable.Columns.Add(property.Name, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
-            foreach (var item in data)
+            if (data is not null)
             {
-                DataRow row = dataTable.NewRow();
-                foreach (var property in properties)
-                    row[property.Name] = property.GetValue(item) ?? DBNull.Value;
-                dataTable.Rows.Add(row);
+                foreach (var item in data)
+                {
+                    DataRow row = dataTable.NewRow();
+                    foreach (var property in properties)
+                        row[property.Name] = property.GetValue(item) ?? DBNull.Value;
+                    dataTable.Rows.Add(row);
+                }
             }
             return dataTable;
         }
 
-        public static PropertyInfo GetKeyField<T>(this T type)
+        public static PropertyInfo GetKeyField<T>()
         {
             var properties = typeof(T).GetProperties();
             foreach (var prop in properties)
