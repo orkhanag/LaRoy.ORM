@@ -9,7 +9,7 @@ namespace LaRoy.ORM.Tests
 {
     public class TestBase
     {
-        public SqlConnection sqlConnection { get; set; } = new("Server= localhost; Database= master; Integrated Security=True;");
+        public SqlConnection sqlConnection = new("Server= localhost; Database= master; Integrated Security=True;");
 
         protected IEnumerable<DailyCustomerPayments>? GenerateTestData(int count)
         {

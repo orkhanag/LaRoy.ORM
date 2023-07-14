@@ -1,11 +1,6 @@
 ﻿using LaRoy.ORM.Tests.DTO;
 using LaRoy.ORM.Utils;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LaRoy.ORM.Tests.UtilsTests
@@ -16,6 +11,7 @@ namespace LaRoy.ORM.Tests.UtilsTests
         [InlineData(1)]
         [InlineData(69)]
         [InlineData(420)]
+        [InlineData(4269)]
         public void ToDataTable_ShouldConvertDataToDataTable(int dataCount)
         {
             //Arrange
@@ -33,7 +29,6 @@ namespace LaRoy.ORM.Tests.UtilsTests
             foreach (var item in dataType.GetProperties())
                 Assert.Contains(item.Name, columnNames);
         }
-
 
         [Fact]
         public void GetKeyField_ShouldGetFiledWithKeyAttribute()

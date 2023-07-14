@@ -1,15 +1,9 @@
 ﻿using Dapper;
-using LaRoy.ORM.BulkOperations;
 using LaRoy.ORM.Tests.DTO;
 using LaRoy.ORM.Utils;
 using MySql.Data.MySqlClient;
 using Npgsql;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LaRoy.ORM.Tests.UtilsTests
