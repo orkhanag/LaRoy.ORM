@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LaRoy.ORM", "src\LaRoy.ORM.csproj", "{2F3B5122-EBA1-4A2B-A4B8-970C8CB8A953}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LaRoy.ORM", "src\LaRoy.ORM\LaRoy.ORM.csproj", "{2F3B5122-EBA1-4A2B-A4B8-970C8CB8A953}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaRoy.ORM.Tests", "LaRoy.ORM.Tests\LaRoy.ORM.Tests.csproj", "{52AA0D0F-2E1F-4C5F-A562-61970E14A6E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaRoy.ORM.Tests", "src\LaRoy.ORM.Tests\LaRoy.ORM.Tests.csproj", "{52AA0D0F-2E1F-4C5F-A562-61970E14A6E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

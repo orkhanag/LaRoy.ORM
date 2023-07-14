@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\LaRoy.ORM.csproj" />
+    <ProjectReference Include="..\LaRoy.ORM\LaRoy.ORM.csproj" />
   </ItemGroup>
 
 </Project>
