@@ -19,11 +19,11 @@ namespace LaRoy.ORM.Tests.BulkOperationsTests
             var connection = sqlConnection;
             //Act
             int result = connection.BulkInsert(data);
-            var checkData = connection.ExecuteScalar("SELECT COUNT(*) FROM DailyCustomerPayments");
+            var checkData = (int)connection.ExecuteScalar("SELECT COUNT(*) FROM DailyCustomerPayments");
             connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
             //Assert
             Assert.Equal(data.Count(), result);
-            Assert.Equal(data.Count(), (int)checkData);
+            Assert.Equal(data.Count(), checkData);
         }
     }
 }

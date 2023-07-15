@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MySql.Data.MySqlClient;
+using Npgsql;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.SqlClient;
 using System.Reflection;
 
 namespace LaRoy.ORM.Utils
@@ -36,6 +39,25 @@ namespace LaRoy.ORM.Utils
                     return prop;
             }
             throw new NotSupportedException($"Type {typeof(T).Name} doesn't have 'Key' field!");
+        }
+
+        public static string GetSpecificUpdateCommandText(this IDbCommand command, string tableName, string columnValues, string tempTableName, string keyFieldName)
+        {
+            return command switch
+            {
+                SqlCommand => $@"UPDATE {tableName} SET
+                                                {columnValues}
+                                                FROM {tempTableName} AS tmp
+                                                WHERE {tableName}.{keyFieldName} = tmp.{keyFieldName}",
+                NpgsqlCommand => $@"UPDATE {tableName} SET
+                                                {columnValues}
+                                                FROM {tempTableName} AS tmp
+                                                WHERE {tableName}.{keyFieldName} = tmp.{keyFieldName}",
+                MySqlCommand => $@"UPDATE {tableName} dest, {tempTableName} src SET
+                                                {columnValues.Trim(',')}
+                                              WHERE dest.{keyFieldName}=src.{keyFieldName}"
+
+            };
         }
     }
 }

@@ -18,53 +18,35 @@ namespace LaRoy.ORM.BulkOperations
     {
         public static void BulkDelete<T>(this IDbConnection connection, IEnumerable<T> data)
         {
-            connection.Open();
-            string keyFieldName = DataManupulations.GetKeyField<T>().Name;
-            Type keyFieldType = DataManupulations.GetKeyField<T>().PropertyType;
-            string tableName = typeof(T).Name;
-            string tempTableName = string.Empty;
-            DataTable tempTable = new DataTable();
-            tempTable.Columns.Add(keyFieldName, keyFieldType);
-            foreach (var item in data)
-            {
-                var id = DataManupulations.GetKeyField<T>().GetValue(item);
-                tempTable.Rows.Add(id);
-            }
             try
             {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+
+                string keyFieldName = DataManupulations.GetKeyField<T>().Name;
+                Type keyFieldType = DataManupulations.GetKeyField<T>().PropertyType;
+
+                string tableName = typeof(T).Name;
+                DataTable tempTable = new DataTable();
+                tempTable.Columns.Add(keyFieldName, keyFieldType);
+                foreach (var item in data)
+                {
+                    var id = DataManupulations.GetKeyField<T>().GetValue(item);
+                    tempTable.Rows.Add(id);
+                }
+
+                string tempTableName = connection is SqlConnection ? "#TempIDs" : "TempIDs";
+                connection.CreateTemporaryTable<T>(tempTableName, onlyKeyField: true);
+
                 if (connection is SqlConnection sqlConnection)
-                {
-                    tempTableName = "#TempIDs";
-                    sqlConnection.CreateTemporaryTable<T>(tempTableName, onlyKeyField: true);
-                    using SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConnection);
-                    bulkCopy.DestinationTableName = tempTableName;
-                    bulkCopy.WriteToServer(tempTable);
-                }
+                    sqlConnection.SqlBulkInsert(tempTableName, tempTable);
+
                 else if (connection is NpgsqlConnection npgsqlConnection)
-                {
-                    tempTableName = "TempIDs";
-                    npgsqlConnection.CreateTemporaryTable<T>(tempTableName, onlyKeyField: true);
-                    using var binaryImporter = npgsqlConnection.BeginBinaryImport($"COPY {tempTableName} FROM STDIN (FORMAT BINARY)");
-                    foreach (DataRow row in tempTable.Rows)
-                    {
-                        binaryImporter.StartRow();
-                        var value = row[tempTable.Columns[0].ColumnName];
-                        var type = tempTable.Columns[0].DataType.GetNpgsqlDbType();
-                        binaryImporter.Write(value, type);
-                    }
-                    binaryImporter.Complete();
-                }
+                    npgsqlConnection.NpgSqlBulkInsert(tempTableName, tempTable);
+
                 else if (connection is MySqlConnection mySqlConnection)
-                {
-                    tempTableName = "TempIDs";
-                    mySqlConnection.CreateTemporaryTable<T>(tempTableName, onlyKeyField: true);
-                    using MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
-                    MySqlCommandBuilder commandBuilder = new MySqlCommandBuilder(dataAdapter);
-                    dataAdapter.SelectCommand = mySqlConnection.CreateCommand();
-                    dataAdapter.SelectCommand.CommandText = $"SELECT * FROM {tempTableName}";
-                    dataAdapter.InsertCommand = commandBuilder.GetInsertCommand();
-                    dataAdapter.Update(tempTable);
-                }
+                    mySqlConnection.MySqlBulkInsert(tempTableName, tempTable);
+
                 string deleteQuery = $"DELETE FROM {tableName} WHERE [{keyFieldName}] IN (SELECT [{keyFieldName}] FROM {tempTableName})";
 
                 using IDbCommand deleteCommand = connection.GetSpecificCommandType(deleteQuery);
