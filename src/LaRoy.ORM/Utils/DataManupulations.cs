@@ -59,5 +59,29 @@ namespace LaRoy.ORM.Utils
 
             };
         }
+
+        public static string GenerateCreateTableQuery<T>(string tableName, IDbConnection connection, bool onlyKeyField = false)
+        {
+            var properties = typeof(T).GetProperties();
+            string columnDefinitionsStr = string.Empty;
+            if (onlyKeyField)
+            {
+                var keyField = DataManupulations.GetKeyField<T>();
+                columnDefinitionsStr = $"{keyField.Name} {keyField.PropertyType.GetDbTypeAsString(connection)}";
+            }
+            else
+            {
+                List<string> columnDefinitions = new();
+                foreach (var property in properties)
+                    columnDefinitions.Add($"{property.Name} {property.PropertyType.GetDbTypeAsString(connection)}");
+
+                columnDefinitionsStr = string.Join(", ", columnDefinitions);
+            }
+            string altSyntax = string.Empty;
+            if (connection is not SqlConnection)
+                altSyntax = connection is NpgsqlConnection ? "TEMP" : "TEMPORARY";
+            string createTableQuery = $"CREATE {altSyntax} TABLE {tableName} ({columnDefinitionsStr})";
+            return createTableQuery;
+        }
     }
 }

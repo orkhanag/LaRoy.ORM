@@ -1,4 +1,5 @@
 ﻿using LaRoy.Mapper.BulkOperations.Utils;
+using LaRoy.ORM.Queries;
 using LaRoy.ORM.Utils;
 using MySql.Data.MySqlClient;
 using Npgsql;
@@ -28,6 +29,8 @@ namespace LaRoy.ORM.BulkOperations
 
                 else if (connection is MySqlConnection mySqlConnection)
                     mySqlConnection.MySqlBulkInsert(tableName, dataTable);
+
+                connection.Query("", new { Orxan = 3, Elxan = "" });
 
                 return dataTable.Rows.Count;
             }

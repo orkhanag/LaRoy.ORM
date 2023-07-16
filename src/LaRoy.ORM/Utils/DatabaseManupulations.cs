@@ -13,35 +13,11 @@ namespace LaRoy.ORM.Utils
 {
     public static class DatabaseManupulations
     {
-        public static string GenerateCreateTableQuery<T>(string tableName, IDbConnection connection, bool onlyKeyField = false)
-        {
-            var properties = typeof(T).GetProperties();
-            string columnDefinitionsStr = string.Empty;
-            if (onlyKeyField)
-            {
-                var keyField = DataManupulations.GetKeyField<T>();
-                columnDefinitionsStr = $"{keyField.Name} {keyField.PropertyType.GetDbTypeAsString(connection)}";
-            }
-            else
-            {
-                List<string> columnDefinitions = new();
-                foreach (var property in properties)
-                    columnDefinitions.Add($"{property.Name} {property.PropertyType.GetDbTypeAsString(connection)}");
-
-                columnDefinitionsStr = string.Join(", ", columnDefinitions);
-            }
-            string altSyntax = string.Empty;
-            if (connection is not SqlConnection)
-                altSyntax = connection is NpgsqlConnection ? "TEMP" : "TEMPORARY";
-            string createTableQuery = $"CREATE {altSyntax} TABLE {tableName} ({columnDefinitionsStr})";
-            return createTableQuery;
-        }
-
         public static void CreateTemporaryTable<T>(this IDbConnection connection, string tableName, bool onlyKeyField = false)
         {
             using (DbCommand command = connection.GetSpecificCommandType())
             {
-                command.CommandText = GenerateCreateTableQuery<T>(tableName, connection, onlyKeyField);
+                command.CommandText = DataManupulations.GenerateCreateTableQuery<T>(tableName, connection, onlyKeyField);
                 command.ExecuteNonQuery();
             }
         }
@@ -217,11 +193,18 @@ namespace LaRoy.ORM.Utils
             using IDbCommand command = connection.GetSpecificCommandType();
             var properties = typeof(T).GetProperties();
             var columnValues = string.Empty;
-            foreach (var prop in properties)
-                columnValues += $"dest.{prop.Name} = src.{prop.Name},";
+            if (command is SqlCommand)
+                foreach (var prop in properties)
+                    columnValues += $"{prop.Name} = tmp.{prop.Name},";
+            else if (command is NpgsqlCommand)
+                foreach (var prop in properties)
+                    columnValues += $"{prop.Name} = tmp.{prop.Name},";
+            else if (command is MySqlCommand)
+                foreach (var prop in properties)
+                    columnValues += $"dest.{prop.Name} = src.{prop.Name},";
             var keyFieldName = DataManupulations.GetKeyField<T>().Name;
             command.CommandTimeout = 300;
-            command.CommandText = command.GetSpecificUpdateCommandText(tableName, columnValues, tempTableName, keyFieldName);
+            command.CommandText = command.GetSpecificUpdateCommandText(tableName, columnValues.Trim(','), tempTableName, keyFieldName);
             command.ExecuteNonQuery();
         }
     }

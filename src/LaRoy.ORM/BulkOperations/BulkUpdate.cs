@@ -20,7 +20,7 @@ namespace LaRoy.ORM.BulkOperations
                 if (connection.State != ConnectionState.Open)
                     connection.Open();
 
-                string tempTableName = connection is SqlConnection ? "#TmpTable" : "TmpTable";
+                string tempTableName = connection is SqlConnection ? "#TempTable" : "TempTable";
                 connection.CreateTemporaryTable<T>(tempTableName);
 
                 if (connection is SqlConnection sqlConnection)

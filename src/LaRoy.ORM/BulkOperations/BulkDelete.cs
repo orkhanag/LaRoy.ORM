@@ -47,7 +47,7 @@ namespace LaRoy.ORM.BulkOperations
                 else if (connection is MySqlConnection mySqlConnection)
                     mySqlConnection.MySqlBulkInsert(tempTableName, tempTable);
 
-                string deleteQuery = $"DELETE FROM {tableName} WHERE [{keyFieldName}] IN (SELECT [{keyFieldName}] FROM {tempTableName})";
+                string deleteQuery = $"DELETE FROM {tableName} WHERE {keyFieldName} IN (SELECT {keyFieldName} FROM {tempTableName})";
 
                 using IDbCommand deleteCommand = connection.GetSpecificCommandType(deleteQuery);
                 deleteCommand.ExecuteNonQuery();

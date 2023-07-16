@@ -1,5 +1,7 @@
 ﻿using Bogus;
 using LaRoy.ORM.Tests.DTO;
+using MySql.Data.MySqlClient;
+using Npgsql;
 using System.Data.SqlClient;
 using Xunit;
 
@@ -9,7 +11,9 @@ namespace LaRoy.ORM.Tests
 {
     public class TestBase
     {
-        public SqlConnection sqlConnection = new("Server= localhost; Database= master; Integrated Security=True;");
+        public SqlConnection _sqlConnection = new("Server= localhost; Database= master; Integrated Security=True;");
+        public NpgsqlConnection _npgSqlConnection = new("User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=postgres;Pooling=true;Connection Lifetime=0;");
+        public MySqlConnection _mySqlConnection = new("Server=localhost;Database=world;Uid=root;Pwd=admin;Pooling=False;");
 
         protected IEnumerable<DailyCustomerPayments>? GenerateTestData(int count)
         {
