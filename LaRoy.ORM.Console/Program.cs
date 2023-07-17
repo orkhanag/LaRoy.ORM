@@ -1,12 +1,17 @@
 ﻿using Bogus;
 using Dapper;
 using LaRoy.ORM.BulkOperations;
+using LaRoy.ORM.Queries;
 using LaRoy.ORM.Tests.DTO;
+using LaRoy.ORM.Utils;
 using MySql.Data.MySqlClient;
 using Npgsql;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Dynamic;
+using System.Reflection;
+using Xunit;
 
 namespace LaRoy.ORM.Runner
 {
@@ -31,54 +36,53 @@ namespace LaRoy.ORM.Runner
         }
         static void Main(string[] args)
         {
+            //Arrange
             var data = GenerateTestData(10);
             var connection = _sqlConnection;
-            var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
+            var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
-            var paramValue = data.First().MobileNumber;
+            var paramValue = data.First().PinCode;
             //Act
-            var result = Query(connection, query, new { MobileNumber = paramValue });
-            var expected = data.First().MobileNumber;
-            var actual = result.First().MobileNumber;
-
-            foreach (var item in result)
-            {
-                Console.WriteLine(item);
-            }
+            var result = QuerySingle(connection, query, new { PinCode = paramValue });
+            //Assert
+            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            //Clean
+            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
         }
 
-        public static IEnumerable<dynamic> Query(IDbConnection connection, string sql, params object[] args)
+        public static dynamic QuerySingle(IDbConnection connection, string sql, object param = null)
         {
-            if (connection.State != ConnectionState.Open)
-                connection.Open();
+            var result = QuerySingleOrDefault(connection, sql, param);
+            if (result != null) return result;
+            else throw new InvalidOperationException("Query returned 0 element!");
+        }
 
-            using var command = connection.CreateCommand();
-            command.CommandText = sql;
+        public static dynamic? QuerySingleOrDefault(IDbConnection connection, string sql, object param = null)
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
 
-            var paramsCount = 0;
-            if (args != null && args.Length > 0)
-                foreach (var arg in args)
+                using var command = connection.CreateCommand();
+                command.CommandText = sql;
+
+                if (param != null)
+                    CommonHelper.AddParams(command, param);
+
+                List<dynamic> dataReaders = new();
+                using IDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    var paramName = $"@{paramsCount++}";
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = paramName;
-                    parameter.Value = arg;
-                    command.Parameters.Add(parameter);
+                    dataReaders.Add(reader.ToExpandoObject());
                 }
 
-            using var reader = command.ExecuteReader();
-
-            var dataTable = new DataTable();
-            dataTable.Load(reader);
-            var list = dataTable.AsEnumerable();
-            return list;
-
-
-        }
-
-        private class DataObject
-        {
-            public Dictionary<string, object> Properties { get; } = new Dictionary<string, object>();
+                if (dataReaders.Count == 1) return dataReaders.First();
+                else if (dataReaders.Count == 0) return null;
+                else throw new InvalidOperationException("Query returned more than 1 element!");
+            }
+            finally { connection.Close(); }
         }
     }
 }

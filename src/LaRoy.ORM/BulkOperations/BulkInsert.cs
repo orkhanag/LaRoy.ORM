@@ -30,8 +30,6 @@ namespace LaRoy.ORM.BulkOperations
                 else if (connection is MySqlConnection mySqlConnection)
                     mySqlConnection.MySqlBulkInsert(tableName, dataTable);
 
-                connection.Query("", new { Orxan = 3, Elxan = "" });
-
                 return dataTable.Rows.Count;
             }
             catch (Exception ex)

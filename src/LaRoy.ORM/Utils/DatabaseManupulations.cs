@@ -15,142 +15,11 @@ namespace LaRoy.ORM.Utils
     {
         public static void CreateTemporaryTable<T>(this IDbConnection connection, string tableName, bool onlyKeyField = false)
         {
-            using (DbCommand command = connection.GetSpecificCommandType())
+            using (IDbCommand command = connection.CreateCommand())
             {
-                command.CommandText = DataManupulations.GenerateCreateTableQuery<T>(tableName, connection, onlyKeyField);
+                command.CommandText = CommonHelper.GenerateCreateTableQuery<T>(tableName, connection, onlyKeyField);
                 command.ExecuteNonQuery();
             }
-        }
-
-        public static DbConnection GetSpecificConnectionType(this IDbConnection connection)
-        {
-            return connection switch
-            {
-                SqlConnection sqlConnection => sqlConnection,
-                NpgsqlConnection npgSqlConnection => npgSqlConnection,
-                MySqlConnection mySqlConnection => mySqlConnection,
-                _ => throw new NotSupportedException($"This connection type({connection.GetType().Name}) is not supported!")
-            };
-        }
-
-        public static DbCommand GetSpecificCommandType(this IDbConnection connection, string commandText = "")
-        {
-            return connection switch
-            {
-                SqlConnection sqlConnection => new SqlCommand(commandText, sqlConnection),
-                NpgsqlConnection npgSqlConnection => new NpgsqlCommand(commandText, npgSqlConnection),
-                MySqlConnection mySqlConnection => new MySqlCommand(commandText, mySqlConnection),
-                _ => throw new NotSupportedException($"This connection type({connection.GetType().Name}) is not supported!")
-            };
-        }
-
-        public static string GetDbTypeAsString(this Type dataType, IDbConnection connection)
-        {
-            return connection switch
-            {
-                SqlConnection => dataType.GetSqlTypeString(),
-                NpgsqlConnection => dataType.GetNpgsqlTypeString(),
-                MySqlConnection => dataType.GetMySqlTypeString(),
-                _ => throw new NotSupportedException($"This connection type({connection.GetType().Name}) is not supported!")
-            };
-        }
-
-        public static NpgsqlDbType GetNpgsqlDbType(this Type dataType)
-        {
-            if (dataType == typeof(string))
-                return NpgsqlDbType.Text;
-            if (dataType == typeof(int))
-                return NpgsqlDbType.Integer;
-            if (dataType == typeof(double))
-                return NpgsqlDbType.Double;
-            if (dataType == typeof(decimal))
-                return NpgsqlDbType.Numeric;
-            if (dataType == typeof(DateTime))
-                return NpgsqlDbType.Date;
-            if (dataType == typeof(bool))
-                return NpgsqlDbType.Boolean;
-            if (dataType == typeof(float))
-                return NpgsqlDbType.Real;
-            if (dataType == typeof(short))
-                return NpgsqlDbType.Smallint;
-            if (dataType == typeof(long))
-                return NpgsqlDbType.Bigint;
-            if (dataType == typeof(Guid))
-                return NpgsqlDbType.Uuid;
-            if (dataType == typeof(TimeSpan))
-                return NpgsqlDbType.Interval;
-            if (dataType == typeof(IPAddress))
-                return NpgsqlDbType.Inet;
-            if (dataType == typeof(char))
-                return NpgsqlDbType.InternalChar;
-            // Add additional type mappings as needed
-
-            throw new NotSupportedException($"NpgsqlDbType mapping not found for type '{dataType.Name}'.");
-        }
-
-        public static string GetNpgsqlTypeString(this Type dataType)
-        {
-            if (dataType == typeof(long))
-                return "bigint";
-            if (dataType == typeof(bool))
-                return "boolean";
-            if (dataType == typeof(DateTime) || dataType == typeof(DateTime?))
-                return "date";
-            if (dataType == typeof(double))
-                return "double precision";
-            if (dataType == typeof(int))
-                return "integer";
-            if (dataType == typeof(decimal))
-                return "numeric";
-            if (dataType == typeof(string))
-                return "text";
-            // Add additional type mappings as needed
-
-            throw new NotSupportedException($"Column type mapping not found for type '{dataType.Name}'.");
-        }
-
-        public static string GetSqlTypeString(this Type dataType)
-        {
-            if (dataType == typeof(long))
-                return "bigint";
-            if (dataType == typeof(short))
-                return "smallint";
-            if (dataType == typeof(bool))
-                return "bit";
-            if (dataType == typeof(DateTime?) || dataType == typeof(DateTime))
-                return "datetime";
-            if (dataType == typeof(double))
-                return "float";
-            if (dataType == typeof(int))
-                return "int";
-            if (dataType == typeof(decimal))
-                return "decimal";
-            if (dataType == typeof(string))
-                return "nvarchar(MAX)";
-            // Add additional type mappings as needed
-
-            throw new NotSupportedException($"Column type mapping not found for type '{dataType.Name}'.");
-        }
-
-        public static string GetMySqlTypeString(this Type dataType)
-        {
-            if (dataType == typeof(long))
-                return "bigint";
-            if (dataType == typeof(bool))
-                return "bit";
-            if (dataType == typeof(DateTime) || dataType == typeof(DateTime?))
-                return "date";
-            if (dataType == typeof(double))
-                return "double";
-            if (dataType == typeof(int))
-                return "int";
-            if (dataType == typeof(decimal))
-                return "decimal";
-            if (dataType == typeof(string))
-                return "text";
-            // Add additional type mappings as needed
-
-            throw new NotSupportedException($"Column type mapping not found for type '{dataType.Name}'.");
         }
 
         public static void SqlBulkInsert(this SqlConnection sqlConnection, string tableName, DataTable dataTable)
@@ -190,7 +59,7 @@ namespace LaRoy.ORM.Utils
 
         public static void UpdateDataFromTempTable<T>(this IDbConnection connection, string tableName, string tempTableName)
         {
-            using IDbCommand command = connection.GetSpecificCommandType();
+            using IDbCommand command = connection.CreateCommand();
             var properties = typeof(T).GetProperties();
             var columnValues = string.Empty;
             if (command is SqlCommand)
@@ -202,7 +71,7 @@ namespace LaRoy.ORM.Utils
             else if (command is MySqlCommand)
                 foreach (var prop in properties)
                     columnValues += $"dest.{prop.Name} = src.{prop.Name},";
-            var keyFieldName = DataManupulations.GetKeyField<T>().Name;
+            var keyFieldName = CommonHelper.GetKeyField<T>().Name;
             command.CommandTimeout = 300;
             command.CommandText = command.GetSpecificUpdateCommandText(tableName, columnValues.Trim(','), tempTableName, keyFieldName);
             command.ExecuteNonQuery();

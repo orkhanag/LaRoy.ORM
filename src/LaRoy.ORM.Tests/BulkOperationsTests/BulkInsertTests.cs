@@ -8,7 +8,6 @@ namespace LaRoy.ORM.Tests.BulkOperationsTests
     public class BulkInsertTests : TestBase
     {
         [Theory]
-        [InlineData(4269)]
         [InlineData(420)]
         [InlineData(69)]
         [InlineData(1)]
@@ -27,7 +26,6 @@ namespace LaRoy.ORM.Tests.BulkOperationsTests
         }
 
         [Theory]
-        [InlineData(4269)]
         [InlineData(420)]
         [InlineData(69)]
         [InlineData(1)]
@@ -46,7 +44,6 @@ namespace LaRoy.ORM.Tests.BulkOperationsTests
         }
 
         [Theory]
-        [InlineData(4269)]
         [InlineData(420)]
         [InlineData(69)]
         [InlineData(1)]

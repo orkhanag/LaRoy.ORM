@@ -3,11 +3,12 @@ using Npgsql;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Reflection;
 
 namespace LaRoy.ORM.Utils
 {
-    public static class DataManupulations
+    public static class CommonHelper
     {
         public static DataTable ToDataTable<T>(this IEnumerable<T> data)
         {
@@ -66,7 +67,7 @@ namespace LaRoy.ORM.Utils
             string columnDefinitionsStr = string.Empty;
             if (onlyKeyField)
             {
-                var keyField = DataManupulations.GetKeyField<T>();
+                var keyField = CommonHelper.GetKeyField<T>();
                 columnDefinitionsStr = $"{keyField.Name} {keyField.PropertyType.GetDbTypeAsString(connection)}";
             }
             else
@@ -82,6 +83,82 @@ namespace LaRoy.ORM.Utils
                 altSyntax = connection is NpgsqlConnection ? "TEMP" : "TEMPORARY";
             string createTableQuery = $"CREATE {altSyntax} TABLE {tableName} ({columnDefinitionsStr})";
             return createTableQuery;
+        }
+
+        public static bool IsAnonymousType(this Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return Attribute.IsDefined(type, typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)
+                   && type.IsGenericType
+                   && type.Name.Contains("AnonymousType")
+                   && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
+                   && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
+        }
+
+        public static void AddParams(IDbCommand command, object param)
+        {
+            IDictionary<string, object> parameters = new Dictionary<string, object>();
+
+            if (param.GetType().IsAnonymousType())
+            {
+                var properties = param.GetType().GetProperties();
+
+                foreach (var property in properties)
+                {
+                    var paramName = "@" + property.Name;
+                    var propertyValue = property.GetValue(param);
+                    parameters[paramName] = propertyValue;
+                }
+            }
+            else if (param is IDictionary<string, object> dictParam)
+                parameters = dictParam;
+            else
+                throw new ArgumentException("Invalid parameter type. Only anonymous types or IDictionary<string, object> are supported.");
+
+            foreach (var parameter in parameters)
+            {
+                var paramName = parameter.Key;
+                var dbParameter = command.CreateParameter();
+                dbParameter.ParameterName = paramName;
+                dbParameter.Value = parameter.Value;
+                command.Parameters.Add(dbParameter);
+            }
+        }
+
+        public static dynamic ToExpandoObject(this IDataReader reader)
+        {
+            dynamic result = new ExpandoObject();
+            var dict = result as IDictionary<string, object>;
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                var columnName = reader.GetName(i);
+                var columnValue = reader.GetValue(i);
+                dict[columnName] = columnValue;
+            }
+
+            return result;
+        }
+
+        public static T ToStrongType<T>(this IDataReader reader)
+        {
+            var result = Activator.CreateInstance<T>();
+            var properties = typeof(T).GetProperties();
+            foreach (var property in properties)
+            {
+                var columnName = property.Name;
+                var columnValue = reader[columnName];
+
+                if (columnValue != DBNull.Value)
+                {
+                    property.SetValue(result, columnValue);
+                }
+            }
+            return (T)result;
         }
     }
 }
