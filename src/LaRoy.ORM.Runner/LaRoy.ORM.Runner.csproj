@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\LaRoy.ORM.Tests\LaRoy.ORM.Tests.csproj" />
-    <ProjectReference Include="..\src\LaRoy.ORM\LaRoy.ORM.csproj" />
+    <ProjectReference Include="..\LaRoy.ORM.Tests\LaRoy.ORM.Tests.csproj" />
+    <ProjectReference Include="..\LaRoy.ORM\LaRoy.ORM.csproj" />
   </ItemGroup>
 
 </Project>
