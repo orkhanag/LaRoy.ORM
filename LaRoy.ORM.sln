@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LaRoy.ORM", "src\LaRoy.ORM\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LaRoy.ORM.Tests", "src\LaRoy.ORM.Tests\LaRoy.ORM.Tests.csproj", "{52AA0D0F-2E1F-4C5F-A562-61970E14A6E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaRoy.ORM.Runner", "LaRoy.ORM.Console\LaRoy.ORM.Runner.csproj", "{059E56FA-B794-434D-BE5E-D393D07C5565}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaRoy.ORM.Runner", "src\LaRoy.ORM.Runner\LaRoy.ORM.Runner.csproj", "{059E56FA-B794-434D-BE5E-D393D07C5565}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
