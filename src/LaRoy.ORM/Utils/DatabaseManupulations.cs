@@ -76,5 +76,19 @@ namespace LaRoy.ORM.Utils
             command.CommandText = command.GetSpecificUpdateCommandText(tableName, columnValues.Trim(','), tempTableName, keyFieldName);
             command.ExecuteNonQuery();
         }
+
+        public static IDataReader ExecuteDataReader(this IDbConnection connection, string sql, object param)
+        {
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText = sql;
+
+            if (param != null)
+                CommonHelper.AddParams(command, param);
+
+            return command.ExecuteReader();
+        }
     }
 }

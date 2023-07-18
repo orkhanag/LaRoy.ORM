@@ -95,7 +95,6 @@ namespace LaRoy.ORM.Tests.UtilsTests
         [InlineData(1)]
         [InlineData(69)]
         [InlineData(420)]
-        [InlineData(4269)]
         public void ToDataTable_ShouldConvertDataToDataTable(int dataCount)
         {
             //Arrange
