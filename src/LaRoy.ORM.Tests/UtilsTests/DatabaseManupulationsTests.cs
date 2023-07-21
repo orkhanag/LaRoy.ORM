@@ -24,7 +24,7 @@ namespace LaRoy.ORM.Tests.UtilsTests
                 VALUES ('q1w2e3r', '123qwe', '0703626119', 1, 5, 0, GETDATE())");
             connection.Close();
             //Assert
-            Assert.Equal(result, 1);
+            Assert.Equal(1, result);
         }
 
         [Fact]

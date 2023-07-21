@@ -3,7 +3,6 @@ using System.Data;
 using LaRoy.ORM.Utils;
 using Npgsql;
 using MySql.Data.MySqlClient;
-using LaRoy.Mapper.BulkOperations.Utils;
 
 namespace LaRoy.ORM.BulkOperations
 {

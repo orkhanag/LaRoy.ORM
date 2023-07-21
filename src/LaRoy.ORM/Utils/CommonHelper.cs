@@ -2,9 +2,11 @@
 using Npgsql;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Dynamic;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 
 namespace LaRoy.ORM.Utils
 {
@@ -150,8 +152,7 @@ namespace LaRoy.ORM.Utils
             var properties = typeof(T).GetProperties();
             foreach (var property in properties)
             {
-                var columnName = property.Name;
-                var columnValue = reader[columnName];
+                var columnValue = reader[property.Name];
 
                 if (columnValue != DBNull.Value)
                 {
@@ -160,5 +161,20 @@ namespace LaRoy.ORM.Utils
             }
             return (T)result;
         }
+
+        public static IEnumerable<T> GetDefferedResult<T>(this DbDataReader reader, bool isStrongType = false)
+        {
+            using (reader)
+            {
+                if (isStrongType)
+                    while (reader.Read())
+                        yield return reader.ToStrongType<T>();
+                else
+                    while (reader.Read())
+                        yield return reader.ToExpandoObject();
+            }
+        }
+
+       
     }
 }

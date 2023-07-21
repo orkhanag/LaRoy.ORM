@@ -20,6 +20,7 @@ namespace LaRoy.ORM.Runner
         public static SqlConnection _sqlConnection = new("Server= localhost; Database= master; Integrated Security=True;");
         public static NpgsqlConnection _npgSqlConnection = new("User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=postgres;Pooling=true;Connection Lifetime=0;");
         public static MySqlConnection _mySqlConnection = new("Server=localhost;Database=world;Uid=root;Pwd=admin;Pooling=False;");
+        private static readonly string _truncateQuery = "TRUNCATE TABLE DailyCustomerPayments";
 
         protected static IEnumerable<DailyCustomerPayments>? GenerateTestData(int count)
         {
@@ -47,7 +48,7 @@ namespace LaRoy.ORM.Runner
             //Assert
             Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         public static dynamic QuerySingle(IDbConnection connection, string sql, object param = null)

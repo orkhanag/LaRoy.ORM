@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Net;
 
 namespace LaRoy.ORM.Utils
@@ -77,7 +78,7 @@ namespace LaRoy.ORM.Utils
             command.ExecuteNonQuery();
         }
 
-        public static IDataReader ExecuteDataReader(this IDbConnection connection, string sql, object param)
+        public static DbDataReader ExecuteDataReader(this IDbConnection connection, string sql, object? param = null)
         {
             if (connection.State != ConnectionState.Open)
                 connection.Open();
@@ -88,7 +89,67 @@ namespace LaRoy.ORM.Utils
             if (param != null)
                 CommonHelper.AddParams(command, param);
 
-            return command.ExecuteReader();
+            return (DbDataReader)command.ExecuteReader();
+        }
+
+        public async static Task<DbDataReader> ExecuteDataReaderAsync(this IDbConnection connection, string sql, object? param = null)
+        {
+
+            if (connection.State != ConnectionState.Open)
+                await connection.TryOpenAsync().ConfigureAwait(false);
+
+            using var command = connection.TryCreateCommandAsync();
+            command.CommandText = sql;
+
+            if (param != null)
+                CommonHelper.AddParams(command, param);
+
+            return await command.ExecuteReaderAsync();
+        }
+
+        public static Task TryOpenAsync(this IDbConnection cnn)
+        {
+            if (cnn is DbConnection dbCnn)
+                return dbCnn.OpenAsync();
+            else
+                throw new InvalidOperationException("Async operations require use of a DbConnection or an already open IDbConnection");
+        }
+
+        public static DbCommand TryCreateCommandAsync(this IDbConnection cnn)
+        {
+            if (cnn.CreateCommand() is DbCommand dbCommand)
+                return dbCommand;
+            else
+                throw new InvalidOperationException("Async operations require use of a DbConnection");
+        }
+
+        public static IEnumerable<T> QueryImpl<T>(IDbConnection cnn, string query, object? param = null, bool isStrictType = false)
+        {
+            DbDataReader reader = null;
+            try
+            {
+                if (cnn.State != ConnectionState.Open) cnn.Open();
+                reader = cnn.ExecuteDataReader(query, param);
+                if (!isStrictType)
+                {
+                    while (reader.Read())
+                    {
+                        yield return reader.ToExpandoObject();
+                    }
+                }
+                else
+                {
+                    while (reader.Read())
+                    {
+                        yield return reader.ToStrongType<T>();
+                    }
+                }
+            }
+            finally
+            {
+                if (reader is not null)
+                    reader.Dispose();
+            }
         }
     }
 }

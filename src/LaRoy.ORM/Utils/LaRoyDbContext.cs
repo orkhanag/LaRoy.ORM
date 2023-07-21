@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace LaRoy.Mapper.BulkOperations.Utils
+namespace LaRoy.ORM.Utils
 {
     public abstract class LaRoyDbContext
     {

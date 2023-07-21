@@ -1,7 +1,5 @@
 ﻿using System.Data.SqlClient;
 using LaRoy.ORM.Utils;
-using System.Data.Common;
-using LaRoy.Mapper.BulkOperations.Utils;
 using Npgsql;
 using System.Data;
 using MySql.Data.MySqlClient;

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <Title>LaRoy</Title>
     <Authors>orkhannag</Authors>
-    <Description>An awsome free ORM.</Description>
+    <Description>A simple and free ORM for everyone.</Description>
   </PropertyGroup>
 
   <ItemGroup>

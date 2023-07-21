@@ -1,10 +1,7 @@
-﻿using LaRoy.Mapper.BulkOperations.Utils;
-using LaRoy.ORM.Queries;
-using LaRoy.ORM.Utils;
+﻿using LaRoy.ORM.Utils;
 using MySql.Data.MySqlClient;
 using Npgsql;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace LaRoy.ORM.BulkOperations

@@ -7,119 +7,138 @@ namespace LaRoy.ORM.Tests.QueriesTests
 {
     public class QueryTests : TestBase
     {
+        private readonly string _truncateQuery = "TRUNCATE TABLE DailyCustomerPayments";
         #region Dynamic Query
         [Fact]
         public void Query_ShouldReturnExpectedResultAccordingToSql_WhenSqlConnection_WithoutParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
-            var query = @"SELECT * FROM DailyCustomerPayments";
+            var query = "SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query(connection, query);
             var expected = data.Count();
             var actual = result.Count();
+
             //Assert
             Assert.NotEmpty(result);
             Assert.Equal(expected, actual);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void Query_ShouldReturnExpectedResultAccordingToSql_WhenSqlConnection_WithParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query(connection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
+
             //Assert
             Assert.Single(result);
             Assert.Equal(expected, actual);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void Query_ShouldReturnExpectedResultAccordingToSql_WhenNpgSqlConnection_WithoutParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query(connection, query);
             var expected = data.Count();
             var actual = result.Count();
+
             //Assert
             Assert.NotEmpty(result);
             Assert.Equal(expected, actual);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void Query_ShouldReturnExpectedResultAccordingToSql_WhenNpgSqlConnection_WithParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query(connection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().mobilenumber;
+
             //Assert
             Assert.Single(result);
             Assert.Equal(expected, actual);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void Query_ShouldReturnExpectedResultAccordingToSql_WhenMySqlConnection_WithoutParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query(connection, query);
             var expected = data.Count();
             var actual = result.Count();
+
             //Assert
             Assert.NotEmpty(result);
             Assert.Equal(expected, actual);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void Query_ShouldReturnExpectedResultAccordingToSql_WhenMySqlConnection_WithParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query(connection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
+
             //Assert
             Assert.Single(result);
             Assert.Equal(expected, actual);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -128,126 +147,143 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQuery_ShouldReturnExpectedResultAccordingToSql_WhenSqlConnection_WithoutParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query);
             var expected = data.Count();
             var actual = result.Count();
-            var type = result.FirstOrDefault();
+            var type = result.First();
+
             //Assert
             Assert.NotEmpty(result);
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void StrongTypeQuery_ShouldReturnExpectedResultAccordingToSql_WhenSqlConnection_WithParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
-            var type = result.FirstOrDefault();
+            var type = result.First();
+
             //Assert
             Assert.Single(result);
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void StrongTypeQuery_ShouldReturnExpectedResultAccordingToSql_WhenNpgSqlConnection_WithoutParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query);
             var expected = data.Count();
             var actual = result.Count();
-            var type = result.FirstOrDefault();
+            var type = result.First();
+
             //Assert
             Assert.NotEmpty(result);
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void StrongTypeQuery_ShouldReturnExpectedResultAccordingToSql_WhenNpgSqlConnection_WithParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
-            var type = result.FirstOrDefault();
+            var type = result.First();
+
             //Assert
             Assert.Single(result);
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void StrongTypeQuery_ShouldReturnExpectedResultAccordingToSql_WhenMySqlConnection_WithoutParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query);
             var expected = data.Count();
             var actual = result.Count();
             var type = result.FirstOrDefault();
+
             //Assert
             Assert.NotEmpty(result);
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void StrongTypeQuery_ShouldReturnExpectedResultAccordingToSql_WhenMySqlConnection_WithParameters()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
             connection.BulkInsert(data);
+
             //Act
             var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.FirstOrDefault();
+
             //Assert
             Assert.Single(result);
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -256,28 +292,32 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void QuerySingle_ShouldReturnSingleResultAccordingToSql_WithSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QuerySingle(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void QuerySingle_ShouldThrowException_WhenZeroElementReturnedFromQery_WithSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(1);
+            var data = GenerateTestData(1)!;
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             var paramValue = data.First().PinCode;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle(connection, query, new { PinCode = paramValue }));
         }
@@ -286,41 +326,46 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void QuerySingle_ShouldThrowException_WhenMoreThanOneElementsReturnedFromQery_WithSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle(connection, query));
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void QuerySingle_ShouldReturnSingleResultAccordingToSql_WithNpgSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QuerySingle(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.mobilenumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.mobilenumber);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void QuerySingle_ShouldThrowException_WhenZeroElementReturnedFromQery_WithNpgSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(1);
+            var data = GenerateTestData(1)!;
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             var paramValue = data.First().PinCode;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle(connection, query, new { PinCode = paramValue }));
         }
@@ -329,41 +374,46 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void QuerySingle_ShouldThrowException_WhenMoreThanOneElementsReturnedFromQery_WithNpgSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle(connection, query));
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void QuerySingle_ShouldReturnSingleResultAccordingToSql_WithMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QuerySingle(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void QuerySingle_ShouldThrowException_WhenZeroElementReturnedFromQery_WithMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(1);
+            var data = GenerateTestData(1)!;
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             var paramValue = data.First().PinCode;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle(connection, query, new { PinCode = paramValue }));
         }
@@ -372,13 +422,14 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void QuerySingle_ShouldThrowException_WhenMoreThanOneElementsReturnedFromQery_WithMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle(connection, query));
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -387,18 +438,21 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQuerySingle_ShouldReturnSingleResultAccordingToSql_WithSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -407,7 +461,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query));
         }
@@ -416,31 +471,35 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQuerySingle_ShouldThrowException_WhenMoreThanOneElementsReturnedFromQery_WithMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query));
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void StrongTypeQuerySingle_ShouldReturnSingleResultAccordingToSql_WithNpgSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -449,7 +508,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query));
         }
@@ -458,31 +518,35 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQuerySingle_ShouldThrowException_WhenMoreThanOneElementsReturnedFromQery_WithNpgMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query));
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
         public void StrongTypeQuerySingle_ShouldReturnSingleResultAccordingToSql_WithMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -491,7 +555,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query));
         }
@@ -500,13 +565,14 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQuerySingle_ShouldThrowException_WhenMoreThanOneElementsReturnedFromQery_WithMyMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
             connection.BulkInsert(data);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QuerySingle<DailyCustomerPayments>(connection, query));
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -516,17 +582,20 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void QueryFirst_ShouldReturnFirstResultAccordingToSql_WithSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QueryFirst(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -535,7 +604,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QueryFirst(connection, query));
         }
@@ -544,17 +614,20 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void QueryFirst_ShouldReturnFirstResultAccordingToSql_WithNpgSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QueryFirst(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.mobilenumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.mobilenumber);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -563,7 +636,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QueryFirst(connection, query));
         }
@@ -572,17 +646,20 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void QueryFirst_ShouldReturnFirstResultAccordingToSql_WithMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QueryFirst(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -591,7 +668,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QueryFirst(connection, query));
         }
@@ -603,18 +681,21 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQueryFirst_ShouldReturnFirstResultAccordingToSql_WithSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QueryFirst<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -623,7 +704,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QueryFirst<DailyCustomerPayments>(connection, query));
         }
@@ -632,18 +714,21 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQueryFirst_ShouldReturnFirstResultAccordingToSql_WithNpgSqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QueryFirst<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -652,7 +737,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QueryFirst<DailyCustomerPayments>(connection, query));
         }
@@ -661,18 +747,21 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public void StrongTypeQueryFirst_ShouldReturnFirstResultAccordingToSql_WithMySqlConnection()
         {
             //Arrange
-            var data = GenerateTestData(10);
+            var data = GenerateTestData(10)!;
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             connection.BulkInsert(data);
             var paramValue = data.First().PinCode;
+
             //Act
             var result = Queries.Queries.QueryFirst<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+
             //Assert
-            Assert.Equal(result.MobileNumber, data.Single(x => x.PinCode == paramValue).MobileNumber);
+            Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
+
             //Clean
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -681,7 +770,8 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => Queries.Queries.QueryFirst<DailyCustomerPayments>(connection, query));
         }
@@ -694,9 +784,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
             var connection = _sqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QuerySingleOrDefault(connection, query);
+
             //Assert
             Assert.Null(result);
         }
@@ -707,9 +799,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
             var connection = _npgSqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QuerySingleOrDefault(connection, query);
+
             //Assert
             Assert.Null(result);
         }
@@ -720,9 +814,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
             var connection = _mySqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QuerySingleOrDefault(connection, query);
+
             //Assert
             Assert.Null(result);
         }
@@ -735,9 +831,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _sqlConnection;
             var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QuerySingleOrDefault<int>(connection, query);
+
             //Assert
             Assert.Equal(default, result);
         }
@@ -748,9 +846,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _npgSqlConnection;
             var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QuerySingleOrDefault<int>(connection, query);
+
             //Assert
             Assert.Equal(default, result);
         }
@@ -761,9 +861,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var connection = _mySqlConnection;
             var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QuerySingleOrDefault<int>(connection, query);
+
             //Assert
             Assert.Equal(default, result);
         }
@@ -776,9 +878,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
             var connection = _sqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QueryFirstOrDefault(connection, query);
+
             //Assert
             Assert.Null(result);
         }
@@ -789,9 +893,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
             var connection = _npgSqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QueryFirstOrDefault(connection, query);
+
             //Assert
             Assert.Null(result);
         }
@@ -802,9 +908,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
             var connection = _mySqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QueryFirstOrDefault(connection, query);
+
             //Assert
             Assert.Null(result);
         }
@@ -817,9 +925,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
             var connection = _sqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QueryFirstOrDefault<int>(connection, query);
+
             //Assert
             Assert.Equal(default, result);
         }
@@ -830,9 +940,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
             var connection = _npgSqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QueryFirstOrDefault<int>(connection, query);
+
             //Assert
             Assert.Equal(default, result);
         }
@@ -843,9 +955,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Arrange
             var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
             var connection = _mySqlConnection;
-            connection.Execute("TRUNCATE TABLE DailyCustomerPayments");
+            connection.Execute(_truncateQuery);
+
             //Act
             var result = Queries.Queries.QueryFirstOrDefault<int>(connection, query);
+
             //Assert
             Assert.Equal(default, result);
         }
