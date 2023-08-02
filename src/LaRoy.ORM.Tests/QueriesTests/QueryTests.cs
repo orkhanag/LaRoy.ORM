@@ -7,7 +7,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
 {
     public class QueryTests : TestBase
     {
-        private readonly string _truncateQuery = "TRUNCATE TABLE DailyCustomerPayments";
+        
         #region Dynamic Query
         [Fact]
         public void Query_ShouldReturnExpectedResultAccordingToSql_WhenSqlConnection_WithoutParameters()

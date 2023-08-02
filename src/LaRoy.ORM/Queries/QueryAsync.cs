@@ -18,9 +18,9 @@ namespace LaRoy.ORM.Queries
             return QueryAsync(connection, query, param, buffered);
         }
 
-        public static Task<dynamic> QueryFirstAsync(this IDbConnection connection, string query, object? param = null)
+        public static async Task<dynamic> QueryFirstAsync(this IDbConnection connection, string query, object? param = null)
         {
-            var result = QueryFirstOrDefaultAsync(connection, query, param);
+            var result = await QueryFirstOrDefaultAsync(connection, query, param);
             if (result != null) return result;
             else throw new InvalidOperationException("Query returned 0 element!");
         }
@@ -49,9 +49,9 @@ namespace LaRoy.ORM.Queries
             return QueryFirstOrDefaultAsync(connection, query, param);
         }
 
-        public static Task<dynamic> QuerySingleAsync(this IDbConnection connection, string query, object? param = null)
+        public static async Task<dynamic> QuerySingleAsync(this IDbConnection connection, string query, object? param = null)
         {
-            var result = QuerySingleOrDefaultAsync(connection, query, param);
+            var result = await QuerySingleOrDefaultAsync(connection, query, param);
             if (result != null) return result;
             else throw new InvalidOperationException("Query returned 0 element!");
         }
@@ -125,9 +125,9 @@ namespace LaRoy.ORM.Queries
             return QueryFirstOrDefaultAsync<T>(connection, query, param);
         }
 
-        public static Task<T> QuerySingleAsync<T>(this IDbConnection connection, string query, object? param = null)
+        public static async Task<T> QuerySingleAsync<T>(this IDbConnection connection, string query, object? param = null)
         {
-            var result = QuerySingleOrDefaultAsync<T>(connection, query, param);
+            var result = await QuerySingleOrDefaultAsync<T>(connection, query, param);
             if (result != null) return result;
             else throw new InvalidOperationException("Query returned 0 element!");
         }

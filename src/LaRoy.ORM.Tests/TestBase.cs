@@ -1,7 +1,9 @@
 ﻿using Bogus;
 using LaRoy.ORM.Tests.DTO;
+using LaRoy.ORM.Utils;
 using MySql.Data.MySqlClient;
 using Npgsql;
+using System.Data.Common;
 using System.Data.SqlClient;
 using Xunit;
 
@@ -14,6 +16,10 @@ namespace LaRoy.ORM.Tests
         public SqlConnection _sqlConnection = new("Server= localhost; Database= master; Integrated Security=True;");
         public NpgsqlConnection _npgSqlConnection = new("User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=postgres;Pooling=true;Connection Lifetime=0;");
         public MySqlConnection _mySqlConnection = new("Server=localhost;Database=world;Uid=root;Pwd=admin;Pooling=False;");
+        public SqlDbContext _sqlContext = new();
+        public NpgSqlDbContext _npgSqlContext = new();
+        public MySqlDbContext _mySqlContext = new();
+        public readonly string _truncateQuery = "TRUNCATE TABLE DailyCustomerPayments";
 
         protected IEnumerable<DailyCustomerPayments>? GenerateTestData(int count)
         {
@@ -28,5 +34,23 @@ namespace LaRoy.ORM.Tests
 
             return faker.Generate(count);
         }
+    }
+
+    public class SqlDbContext : LaRoyDbContext
+    {
+        public override DbConnection CreateConnection()
+            => new SqlConnection("Server= localhost; Database= master; Integrated Security=True;");
+    }
+
+    public class NpgSqlDbContext : LaRoyDbContext
+    {
+        public override DbConnection CreateConnection()
+            => new NpgsqlConnection("User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=postgres;Pooling=true;Connection Lifetime=0;");
+    }
+
+    public class MySqlDbContext : LaRoyDbContext
+    {
+        public override DbConnection CreateConnection()
+            => new MySqlConnection("Server=localhost;Database=world;Uid=root;Pwd=admin;Pooling=False;");
     }
 }
