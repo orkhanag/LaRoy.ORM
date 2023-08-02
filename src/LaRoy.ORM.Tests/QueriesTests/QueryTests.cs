@@ -932,7 +932,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
 
             //Assert
             Assert.Equal(default, result);
-        }
+        } 
 
         [Fact]
         public void StrongTypeQueryFirstOrDefault_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithNpgSqlConnection()
