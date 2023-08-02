@@ -1,6 +1,5 @@
 ﻿using LaRoy.ORM.Utils;
 using System.Data;
-using System.Linq;
 
 namespace LaRoy.ORM.Queries
 {
