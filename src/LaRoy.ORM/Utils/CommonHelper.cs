@@ -6,7 +6,6 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Dynamic;
 using System.Reflection;
-using System.Reflection.PortableExecutable;
 
 namespace LaRoy.ORM.Utils
 {

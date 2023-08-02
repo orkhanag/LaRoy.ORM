@@ -1,8 +1,5 @@
 ﻿using LaRoy.ORM.Utils;
-using System;
 using System.Data;
-using System.Data.Common;
-using System.Dynamic;
 
 namespace LaRoy.ORM.Queries
 {

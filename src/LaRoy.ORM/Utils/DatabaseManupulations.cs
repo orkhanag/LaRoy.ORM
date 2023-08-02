@@ -125,25 +125,39 @@ namespace LaRoy.ORM.Utils
 
         public static IEnumerable<T> QueryImpl<T>(IDbConnection cnn, string query, object? param = null, bool isStrictType = false)
         {
-            DbDataReader reader = null;
+            DbDataReader? reader = null;
             try
             {
                 if (cnn.State != ConnectionState.Open) cnn.Open();
                 reader = cnn.ExecuteDataReader(query, param);
                 if (!isStrictType)
-                {
                     while (reader.Read())
-                    {
                         yield return reader.ToExpandoObject();
-                    }
-                }
                 else
-                {
                     while (reader.Read())
-                    {
                         yield return reader.ToStrongType<T>();
-                    }
-                }
+            }
+            finally
+            {
+                if (reader is not null)
+                    reader.Dispose();
+            }
+        }
+
+        public static async IAsyncEnumerable<T> QueryImplAsync<T>(IDbConnection cnn, string query, object? param = null, bool isStrictType = false)
+        {
+            DbDataReader? reader = null;
+            try
+            {
+                if (cnn.State != ConnectionState.Open) cnn.Open();
+                reader = await cnn.ExecuteDataReaderAsync(query, param);
+                if (!isStrictType)
+                    while (reader.Read())
+
+                        yield return reader.ToExpandoObject();
+                else
+                    while (reader.Read())
+                        yield return reader.ToStrongType<T>();
             }
             finally
             {
