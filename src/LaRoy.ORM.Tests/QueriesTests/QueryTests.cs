@@ -963,6 +963,6 @@ namespace LaRoy.ORM.Tests.QueriesTests
             //Assert
             Assert.Equal(default, result);
         }
-        #endregion
+        #endregion 
     }
 }
