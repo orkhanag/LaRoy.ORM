@@ -113,7 +113,11 @@ All extension methods also accept context instead of connection.
 You do not need to open or close the connection, it is handled inside of methods. 
 But you can open your connection before sending it if needed.
 
-Features not thoroughly tested use with caution. Any bug reports and suggestions are appreciated. Send me an email(orkhan.naghisoy@gmail.com)
+## Contributing
+If you have suggestions for how LaRoy ORM could be improved, or want to report a bug, open an issue! I'd love all and any contributions. Send me an email(orkhan.naghisoy@gmail.com)
+
+## Notes
+*Features not thoroughly tested use with caution.
 
 
 
