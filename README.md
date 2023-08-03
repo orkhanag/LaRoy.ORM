@@ -24,7 +24,7 @@ paket add LaRoy.ORM --version 1.0.4-beta
 
 ## How to use
 
-### Create a database connection(For now only MsSql, PostgreSQL and MySql supported)
+### Create a database connection(For now only MsSQL, PostgreSQL and MySQL supported)
 
 ```cs
 var connection = new SqlConnection("your connection string")
@@ -73,7 +73,7 @@ var affectedRows = connection.BulkInsert(dataToInsert);
 //Arrange IEnumerable data to update
 var dataToUpdate = List<YourEntity>
 {
-  //Your changes
+  // Your changes
 };
 
 connection.BulkUpdate(dataToUpdate);
@@ -90,11 +90,30 @@ var dataToDelete= List<YourEntity>
 connection.BulkDelete(dataToDelete);
 ```
 
+### Queries
+LaRoy ORM supports both synchronous and asynchronous queries.
 
+1. Queries with dynamic result type.
+```cs
+IEnumerable<dynamic> dynamicResult = connection.Query("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
+// Or
+IEnumerable<dynamic> dynamicAsyncResult = await connection.QueryAsync("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
+```
 
+2. Queries with strict type results.
+```cs
+IEnumerable<YourType> dynamicResult = connection.Query<YourType>("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
+// Or
+IEnumerable<YourType> dynamicAsyncResult = await connection.QueryAsync<YourType>("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
+```
+Also can use `QueryFirst`, `QueryFirstOrDefault`, `QuerySingle`, and `QuerySingleOrDefault` methods with dynamic and strict type results.
 
+All extension methods also accept context instead of connection.
 
+You do not need to open or close the connection, it is handled inside of methods. 
+But you can open your connection before sending it if needed.
 
+Features not thoroughly tested use with caution. Any bug reports and suggestions are appreciated. Send me an email(orkhan.naghisoy@gmail.com)
 
 
 
