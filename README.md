@@ -73,7 +73,7 @@ var affectedRows = connection.BulkInsert(dataToInsert);
 //Arrange IEnumerable data to update
 var dataToUpdate = List<YourEntity>
 {
-  \\Your changes
+  //Your changes
 };
 
 connection.BulkUpdate(dataToUpdate);
