@@ -769,5 +769,93 @@ namespace LaRoy.ORM.Tests.QueriesTests
             await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query));
         }
         #endregion
+
+        #region Dynamic QuerySingleOrDefaultAsync
+        [Fact]
+        public async void QuerySingleOrDefaultAsync_ShouldReturnNull_WhenQueryReturnsZeroElement_WithSqlConnection()
+        {
+            //Arrange
+            var query = "SELECT * FROM DailyCustomerPayments";
+            var connection = _sqlConnection;
+
+            //Act
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync(connection, query);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async void QuerySingleOrDefaultAsync_ShouldReturnNull_WhenQueryReturnsZeroElement_WithNpgSqlConnection()
+        {
+            //Arrange
+            var query = "SELECT * FROM DailyCustomerPayments";
+            var connection = _npgSqlConnection;
+
+            //Act
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync(connection, query);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async void QuerySingleOrDefaultAsync_ShouldReturnNull_WhenQueryReturnsZeroElement_WithMySqlConnection()
+        {
+            //Arrange
+            var query = "SELECT * FROM DailyCustomerPayments";
+            var connection = _mySqlConnection;
+
+            //Act
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync(connection, query);
+
+            //Assert
+            Assert.Null(result);
+        }
+        #endregion
+
+        #region StrongType QuerySingleOrDefaultAsync
+        [Fact]
+        public async void StrongTypeQuerySingleOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithSqlConnection()
+        {
+            //Arrange
+            var connection = _sqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(connection, query);
+
+            //Assert
+            Assert.Equal(default, result);
+        }
+
+        [Fact]
+        public async void StrongTypeQuerySingleOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithNpgSqlConnection()
+        {
+            //Arrange
+            var connection = _npgSqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(connection, query);
+
+            //Assert
+            Assert.Equal(default, result);
+        }
+
+        [Fact]
+        public async void StrongTypeQuerySingleOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithMySqlConnection()
+        {
+            //Arrange
+            var connection = _mySqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(connection, query);
+
+            //Assert
+            Assert.Equal(default, result);
+        }
+        #endregion
     }
 }
