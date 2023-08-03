@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Title>LaRoy</Title>
+		<Authors>orkhannag</Authors>
+		<Description>A simple and free ORM for everyone.</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Title>LaRoy</Title>
-    <Authors>orkhannag</Authors>
-    <Description>A simple and free ORM for everyone.</Description>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.33" />
-    <PackageReference Include="Npgsql" Version="7.0.4" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<PackageReference Include="MySql.Data" Version="8.0.33" />
+		<PackageReference Include="Npgsql" Version="7.0.4" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+		<None Include="docs\README.md" Pack="true" PackagePath="\"/>
+	</ItemGroup>
 </Project>
