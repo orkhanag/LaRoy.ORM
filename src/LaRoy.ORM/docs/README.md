@@ -7,19 +7,19 @@
 1. .NET CLI
 
 ```
-dotnet add package LaRoy.ORM --version 1.0.4-beta
+dotnet add package LaRoy.ORM --version 1.0.5-beta
 ```
 
 2. NuGet Package Manager
 
 ```
-NuGet\Install-Package LaRoy.ORM -Version 1.0.4-beta
+NuGet\Install-Package LaRoy.ORM -Version 1.0.5-beta
 ```
 
 3. Paket CLI
 
 ```
-paket add LaRoy.ORM --version 1.0.4-beta
+paket add LaRoy.ORM --version 1.0.5-beta
 ```
 
 ## How to use
