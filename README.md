@@ -102,9 +102,9 @@ IEnumerable<dynamic> dynamicAsyncResult = await connection.QueryAsync("SELECT * 
 
 2. Queries with strict type results.
 ```cs
-IEnumerable<YourType> dynamicResult = connection.Query<YourType>("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
+IEnumerable<YourType> strictResult = connection.Query<YourType>("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
 // Or
-IEnumerable<YourType> dynamicAsyncResult = await connection.QueryAsync<YourType>("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
+IEnumerable<YourType> strictAsyncResult = await connection.QueryAsync<YourType>("SELECT * FROM SampleTable st WHERE st.Id = @Param", new {Param = yourParameter});
 ```
 Also can use `QueryFirst`, `QueryFirstOrDefault`, `QuerySingle`, and `QuerySingleOrDefault` methods with dynamic and strict type results.
 
