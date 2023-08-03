@@ -563,5 +563,211 @@ namespace LaRoy.ORM.Tests.QueriesTests
         }
         #endregion
 
+        #region Dynamic QueryFirstAsync
+        [Fact]
+        public async void QueryFirstAsync_ShouldReturnFirstResultAccordingToSql_WithSqlConnection()
+        {
+            //Arrange
+            var data = GenerateTestData(10)!;
+            var connection = _sqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
+            connection.BulkInsert(data);
+            var paramValue = data.First().PinCode;
+
+            //Act
+            var result = await Queries.Queries.QueryFirstAsync(connection, query, new { PinCode = paramValue });
+            var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
+            var actual = result.MobileNumber;
+
+            //Assert
+            Assert.Equal(expected, actual);
+
+            //Clean
+            connection.Execute(_truncateQuery);
+        }
+
+        [Fact]
+        public async void QueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithSqlConnection()
+        {
+            //Arrange
+            var connection = _sqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+            connection.Execute(_truncateQuery);
+
+            //Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(connection, query));
+        }
+
+        [Fact]
+        public async void QueryFirstAsync_ShouldReturnFirstResultAccordingToSql_WithNpgSqlConnection()
+        {
+            //Arrange
+            var data = GenerateTestData(10)!;
+            var connection = _npgSqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
+            connection.BulkInsert(data);
+            var paramValue = data.First().PinCode;
+
+            //Act
+            var result = await Queries.Queries.QueryFirstAsync(connection, query, new { PinCode = paramValue });
+            var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
+            var actual = result.mobilenumber;
+
+            //Assert
+            Assert.Equal(expected, actual);
+
+            //Clean
+            connection.Execute(_truncateQuery);
+        }
+
+        [Fact]
+        public async void QueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithNpgSqlConnection()
+        {
+            //Arrange
+            var connection = _npgSqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+            connection.Execute(_truncateQuery);
+
+            //Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(connection, query));
+        }
+
+        [Fact]
+        public async void QueryFirstAsync_ShouldReturnFirstResultAccordingToSql_WithMySqlConnection()
+        {
+            //Arrange
+            var data = GenerateTestData(10)!;
+            var connection = _mySqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
+            connection.BulkInsert(data);
+            var paramValue = data.First().PinCode;
+
+            //Act
+            var result = await Queries.Queries.QueryFirstAsync(connection, query, new { PinCode = paramValue });
+            var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
+            var actual = result.MobileNumber;
+
+            //Assert
+            Assert.Equal(expected, actual);
+
+            //Clean
+            connection.Execute(_truncateQuery);
+        }
+
+        [Fact]
+        public async void QueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithMySqlConnection()
+        {
+            //Arrange
+            var connection = _mySqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(connection, query));
+        }
+        #endregion
+
+        #region StrongType QueryFirstAsync
+        [Fact]
+        public async void StrongTypeQueryFirstAsync_ShouldReturnFirstResultAccordingToSql_WithSqlConnection()
+        {
+            //Arrange
+            var data = GenerateTestData(10)!;
+            var connection = _sqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
+            connection.BulkInsert(data);
+            var paramValue = data.First().PinCode;
+
+            //Act
+            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
+            var actual = result.MobileNumber;
+
+            //Assert
+            Assert.Equal(expected, actual);
+            Assert.IsType<DailyCustomerPayments>(result);
+
+            //Clean
+            connection.Execute(_truncateQuery);
+        }
+
+        [Fact]
+        public async void StrongTypeQueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithSqlConnection()
+        {
+            //Arrange
+            var connection = _sqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query));
+        }
+
+        [Fact]
+        public async void StrongTypeQueryFirstAsync_ShouldReturnFirstResultAccordingToSql_WithNpgSqlConnection()
+        {
+            //Arrange
+            var data = GenerateTestData(10)!;
+            var connection = _npgSqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
+            connection.BulkInsert(data);
+            var paramValue = data.First().PinCode;
+
+            //Act
+            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
+            var actual = result.MobileNumber;
+
+            //Assert
+            Assert.Equal(expected, actual);
+            Assert.IsType<DailyCustomerPayments>(result);
+
+            //Clean
+            connection.Execute(_truncateQuery);
+        }
+
+        [Fact]
+        public async void StrongTypeQueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithNpgSqlConnection()
+        {
+            //Arrange
+            var connection = _npgSqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query));
+        }
+
+        [Fact]
+        public async void StrongTypeQueryFirstAsync_ShouldReturnFirstResultAccordingToSql_WithMySqlConnection()
+        {
+            //Arrange
+            var data = GenerateTestData(10)!;
+            var connection = _mySqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
+            connection.BulkInsert(data);
+            var paramValue = data.First().PinCode;
+
+            //Act
+            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
+            var actual = result.MobileNumber;
+            //Assert
+            Assert.Equal(expected, actual);
+            Assert.IsType<DailyCustomerPayments>(result);
+
+            //Clean
+            connection.Execute(_truncateQuery);
+        }
+
+        [Fact]
+        public async void StrongTypeQueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithMySqlConnection()
+        {
+            //Arrange
+            var connection = _mySqlConnection;
+            var query = "SELECT * FROM DailyCustomerPayments";
+            connection.Execute(_truncateQuery);
+
+            //Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query));
+        }
+        #endregion
     }
 }

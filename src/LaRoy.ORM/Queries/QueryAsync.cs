@@ -93,9 +93,9 @@ namespace LaRoy.ORM.Queries
             return QueryAsync<T>(connection, query, param, buffered);
         }
 
-        public static Task<T> QueryFirstAsync<T>(this IDbConnection connection, string query, object? param = null)
+        public static async Task<T> QueryFirstAsync<T>(this IDbConnection connection, string query, object? param = null)
         {
-            var result = QueryFirstOrDefaultAsync<T>(connection, query, param);
+            var result = await QueryFirstOrDefaultAsync<T>(connection, query, param);
             if (result != null) return result;
             else throw new InvalidOperationException("Query returned 0 element!");
         }
