@@ -8,7 +8,7 @@ namespace LaRoy.ORM.BulkOperations
 {
     public static partial class BulkOperations
     {
-        public static void BulkUpdate<T>(this IDbConnection connection, IEnumerable<T> data)
+        public static int BulkUpdate<T>(this IDbConnection connection, IEnumerable<T> data)
         {
             try
             {
@@ -30,9 +30,9 @@ namespace LaRoy.ORM.BulkOperations
                 else if (connection is MySqlConnection mySqlConnection)
                     mySqlConnection.MySqlBulkInsert(tempTableName, dataTable);
 
-                connection.UpdateDataFromTempTable<T>(tableName, tempTableName);
+                return connection.UpdateDataFromTempTable<T>(tableName, tempTableName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

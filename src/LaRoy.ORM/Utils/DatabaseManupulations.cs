@@ -58,7 +58,7 @@ namespace LaRoy.ORM.Utils
             dataAdapter.Update(dataTable);
         }
 
-        public static void UpdateDataFromTempTable<T>(this IDbConnection connection, string tableName, string tempTableName)
+        public static int UpdateDataFromTempTable<T>(this IDbConnection connection, string tableName, string tempTableName)
         {
             using IDbCommand command = connection.CreateCommand();
             var properties = typeof(T).GetProperties();
@@ -75,7 +75,7 @@ namespace LaRoy.ORM.Utils
             var keyFieldName = CommonHelper.GetKeyField<T>().Name;
             command.CommandTimeout = 300;
             command.CommandText = command.GetSpecificUpdateCommandText(tableName, columnValues.Trim(','), tempTableName, keyFieldName);
-            command.ExecuteNonQuery();
+            return command.ExecuteNonQuery();
         }
 
         public static DbDataReader ExecuteDataReader(this IDbConnection connection, string sql, object? param = null)
