@@ -13,12 +13,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(connection, query);
+            var result = await Queries.Queries.QueryAsync(_sqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
 
@@ -27,19 +26,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
         [Fact]
         public async void QueryAsync_ShouldReturnExpectedResultAccordingToSql_WhenSqlConnection_WithParameters()
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync(_sqlConnection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
 
@@ -48,19 +46,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
         [Fact]
         public async void QueryAsync_ShouldReturnExpectedResultAccordingToSql_WhenNpgSqlConnection_WithoutParameters()
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(connection, query);
+            var result = await Queries.Queries.QueryAsync(_npgSqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
 
@@ -69,19 +66,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
         [Fact]
         public async void QueryAsync_ShouldReturnExpectedResultAccordingToSql_WhenNpgSqlConnection_WithParameters()
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync(_npgSqlConnection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().mobilenumber;
 
@@ -90,19 +86,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
         [Fact]
         public async void QueryAsync_ShouldReturnExpectedResultAccordingToSql_WhenMySqlConnection_WithoutParameters()
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(connection, query);
+            var result = await Queries.Queries.QueryAsync(_mySqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
 
@@ -111,19 +106,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
         [Fact]
         public async void QueryAsync_ShouldReturnExpectedResultAccordingToSql_WhenMySqlConnection_WithParameters()
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync(_mySqlConnection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
 
@@ -132,7 +126,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -142,12 +136,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(connection, query);
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_sqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
             var type = result.First();
@@ -158,7 +151,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -166,12 +159,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_sqlConnection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.First();
@@ -182,7 +174,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -190,12 +182,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(connection, query);
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_npgSqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
             var type = result.First();
@@ -206,7 +197,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -214,12 +205,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_npgSqlConnection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.First();
@@ -229,7 +219,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -237,12 +227,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(connection, query);
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_mySqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
             var type = result.FirstOrDefault();
@@ -253,7 +242,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -261,12 +250,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_mySqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.FirstOrDefault();
@@ -277,7 +265,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -287,13 +275,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QuerySingleAsync(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QuerySingleAsync(_sqlConnection, query, new { PinCode = paramValue });
             var actual = data.First(x => x.PinCode == paramValue).MobileNumber;
             var expected = result.MobileNumber;
 
@@ -301,19 +288,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void QuerySingleAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithSqlConnection()
         {
             //Arrange
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             var paramValue = "1Q2W3E4";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(connection, query, new { PinCode = paramValue }));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(_sqlConnection, query, new { PinCode = paramValue }));
         }
 
         [Fact]
@@ -321,13 +307,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(connection, query));
-            connection.Execute(_truncateQuery);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(_sqlConnection, query));
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -335,31 +320,29 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QuerySingleAsync(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QuerySingleAsync(_npgSqlConnection, query, new { PinCode = paramValue });
 
             //Assert
             Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.mobilenumber);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void QuerySingleAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithNpgSqlConnection()
         {
             //Arrange
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             var paramValue = "1Q2W3E4";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(connection, query, new { PinCode = paramValue }));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(_npgSqlConnection, query, new { PinCode = paramValue }));
         }
 
         [Fact]
@@ -367,13 +350,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(connection, query));
-            connection.Execute(_truncateQuery);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(_npgSqlConnection, query));
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -381,31 +363,29 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QuerySingleAsync(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QuerySingleAsync(_mySqlConnection, query, new { PinCode = paramValue });
 
             //Assert
             Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void QuerySingleAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithMySqlConnection()
         {
             //Arrange
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
             var paramValue = "1Q2W3E4";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(connection, query, new { PinCode = paramValue }));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(_mySqlConnection, query, new { PinCode = paramValue }));
         }
 
         [Fact]
@@ -413,13 +393,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(connection, query));
-            connection.Execute(_truncateQuery);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync(_mySqlConnection, query));
+            _mySqlConnection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -429,31 +408,29 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_sqlConnection, query, new { PinCode = paramValue });
 
             //Assert
             Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void StrongTypeQuerySingleAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithSqlConnection()
         {
             //Arrange
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_sqlConnection, query));
         }
 
         [Fact]
@@ -461,13 +438,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query));
-            connection.Execute(_truncateQuery);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_sqlConnection, query));
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -475,31 +451,29 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_npgSqlConnection, query, new { PinCode = paramValue });
 
             //Assert
             Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void StrongTypeQuerySingleAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithNpgSqlConnection()
         {
             //Arrange
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_npgSqlConnection, query));
         }
 
         [Fact]
@@ -507,13 +481,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query));
-            connection.Execute(_truncateQuery);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_npgSqlConnection, query));
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -521,31 +494,29 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_mySqlConnection, query, new { PinCode = paramValue });
 
             //Assert
             Assert.Equal(data.First(x => x.PinCode == paramValue).MobileNumber, result.MobileNumber);
             Assert.IsType<DailyCustomerPayments>(result);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void StrongTypeQuerySingleAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithMySqlConnection()
         {
             //Arrange
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_mySqlConnection, query));
         }
 
         [Fact]
@@ -553,13 +524,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(connection, query));
-            connection.Execute(_truncateQuery);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QuerySingleAsync<DailyCustomerPayments>(_mySqlConnection, query));
+            _mySqlConnection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -569,13 +539,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QueryFirstAsync(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QueryFirstAsync(_sqlConnection, query, new { PinCode = paramValue });
             var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
             var actual = result.MobileNumber;
 
@@ -583,19 +552,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void QueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithSqlConnection()
         {
             //Arrange
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(_sqlConnection, query));
         }
 
         [Fact]
@@ -603,13 +571,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QueryFirstAsync(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QueryFirstAsync(_npgSqlConnection, query, new { PinCode = paramValue });
             var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
             var actual = result.mobilenumber;
 
@@ -617,19 +584,18 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void QueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithNpgSqlConnection()
         {
             //Arrange
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(_npgSqlConnection, query));
         }
 
         [Fact]
@@ -637,13 +603,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QueryFirstAsync(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QueryFirstAsync(_mySqlConnection, query, new { PinCode = paramValue });
             var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
             var actual = result.MobileNumber;
 
@@ -651,18 +616,17 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void QueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithMySqlConnection()
         {
             //Arrange
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync(_mySqlConnection, query));
         }
         #endregion
 
@@ -672,13 +636,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(_sqlConnection, query, new { PinCode = paramValue });
             var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
             var actual = result.MobileNumber;
 
@@ -687,18 +650,17 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(result);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void StrongTypeQueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithSqlConnection()
         {
             //Arrange
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(_sqlConnection, query));
         }
 
         [Fact]
@@ -706,13 +668,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(_npgSqlConnection, query, new { PinCode = paramValue });
             var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
             var actual = result.MobileNumber;
 
@@ -721,18 +682,17 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(result);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void StrongTypeQueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithNpgSqlConnection()
         {
             //Arrange
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(_npgSqlConnection, query));
         }
 
         [Fact]
@@ -740,13 +700,12 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments WHERE PinCode = @PinCode";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
             var paramValue = data.First().PinCode;
 
             //Act
-            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query, new { PinCode = paramValue });
+            var result = await Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(_mySqlConnection, query, new { PinCode = paramValue });
             var expected = data.First(x => x.PinCode == paramValue).MobileNumber;
             var actual = result.MobileNumber;
             //Assert
@@ -754,19 +713,17 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(result);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
         public async void StrongTypeQueryFirstAsync_ShouldThrowException_WhenZeroElementReturnedFromQery_WithMySqlConnection()
         {
             //Arrange
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.Execute(_truncateQuery);
 
             //Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(connection, query));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => Queries.Queries.QueryFirstAsync<DailyCustomerPayments>(_mySqlConnection, query));
         }
         #endregion
 
@@ -776,10 +733,9 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
-            var connection = _sqlConnection;
 
             //Act
-            var result = await Queries.Queries.QuerySingleOrDefaultAsync(connection, query);
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync(_sqlConnection, query);
 
             //Assert
             Assert.Null(result);
@@ -790,10 +746,9 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
-            var connection = _npgSqlConnection;
 
             //Act
-            var result = await Queries.Queries.QuerySingleOrDefaultAsync(connection, query);
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync(_npgSqlConnection, query);
 
             //Assert
             Assert.Null(result);
@@ -804,10 +759,9 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var query = "SELECT * FROM DailyCustomerPayments";
-            var connection = _mySqlConnection;
 
             //Act
-            var result = await Queries.Queries.QuerySingleOrDefaultAsync(connection, query);
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync(_mySqlConnection, query);
 
             //Assert
             Assert.Null(result);
@@ -819,11 +773,10 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public async void StrongTypeQuerySingleOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithSqlConnection()
         {
             //Arrange
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act
-            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(connection, query);
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(_sqlConnection, query);
 
             //Assert
             Assert.Equal(default, result);
@@ -833,11 +786,10 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public async void StrongTypeQuerySingleOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithNpgSqlConnection()
         {
             //Arrange
-            var connection = _npgSqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act
-            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(connection, query);
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(_npgSqlConnection, query);
 
             //Assert
             Assert.Equal(default, result);
@@ -847,15 +799,96 @@ namespace LaRoy.ORM.Tests.QueriesTests
         public async void StrongTypeQuerySingleOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithMySqlConnection()
         {
             //Arrange
-            var connection = _mySqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
 
             //Act
-            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(connection, query);
+            var result = await Queries.Queries.QuerySingleOrDefaultAsync<DailyCustomerPayments>(_mySqlConnection, query);
 
             //Assert
             Assert.Equal(default, result);
         }
         #endregion
+
+        #region Dynamic QueryFirstOrDefaultAsync
+        [Fact]
+        public async void QueryFirstOrDefaultAsync_ShouldReturnNull_WhenQueryReturnsZeroElement_WithSqlConnection()
+        {
+            //Arrange
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QueryFirstOrDefaultAsync(_sqlConnection, query);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async void QueryFirstOrDefaultAsync_ShouldReturnNull_WhenQueryReturnsZeroElement_WithNpgSqlConnection()
+        {
+            //Arrange
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QueryFirstOrDefaultAsync(_npgSqlConnection, query);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async void QueryFirstOrDefaultAsync_ShouldReturnNull_WhenQueryReturnsZeroElement_WithMySqlConnection()
+        {
+            //Arrange
+            var query = "SELECT * FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QueryFirstOrDefaultAsync(_mySqlConnection, query);
+
+            //Assert
+            Assert.Null(result);
+        }
+        #endregion
+
+        #region StrongType QueryFirstOrDefaultAsync
+        [Fact]
+        public async void StrongTypeQueryFirstOrDefault_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithSqlConnection()
+        {
+            //Arrange
+            var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QueryFirstOrDefaultAsync<int>(_sqlConnection, query);
+
+            //Assert
+            Assert.Equal(default, result);
+        }
+
+        [Fact]
+        public async void StrongTypeQueryFirstOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithNpgSqlConnection()
+        {
+            //Arrange
+            var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QueryFirstOrDefaultAsync<int>(_npgSqlConnection, query);
+
+            //Assert
+            Assert.Equal(default, result);
+        }
+
+        [Fact]
+        public async void StrongTypeQueryFirstOrDefaultAsync_ShouldReturnDefaultValueOfGivenType_WhenQueryReturnsZeroElement_WithMySqlConnection()
+        {
+            //Arrange
+            var query = "SELECT COUNT(*) FROM DailyCustomerPayments";
+
+            //Act
+            var result = await Queries.Queries.QueryFirstOrDefaultAsync<int>(_mySqlConnection, query);
+
+            //Assert
+            Assert.Equal(default, result);
+        }
+        #endregion 
     }
 }

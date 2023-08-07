@@ -7,7 +7,7 @@ namespace LaRoy.ORM.Queries
     {
         public static async Task<IEnumerable<dynamic>?> QueryAsync(this IDbConnection connection, string query, object? param = null, bool buffered = false)
         {
-            var data = DatabaseManupulations.QueryImplAsync<dynamic>(connection, query, param, false);
+            var data = DatabaseManupulations.QueryImplAsync<dynamic>(connection, query, param, isStrictType: false);
             return buffered ? data.ToListAsync().Result : data.ToEnumerable();
         }
 
