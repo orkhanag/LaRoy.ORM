@@ -77,7 +77,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(_npgSqlConnection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync(_npgSqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().mobilenumber;
 
@@ -117,7 +117,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync(_mySqlConnection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync(_mySqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
 
@@ -163,7 +163,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_sqlConnection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_sqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.First();
@@ -209,7 +209,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_npgSqlConnection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = await Queries.Queries.QueryAsync<DailyCustomerPayments>(_npgSqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.First();
