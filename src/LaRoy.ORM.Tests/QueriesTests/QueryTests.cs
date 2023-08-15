@@ -14,12 +14,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = "SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query(connection, query);
+            var result = Queries.Queries.Query(_sqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
 
@@ -28,7 +27,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -36,12 +35,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = Queries.Queries.Query(_sqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
 
@@ -50,7 +48,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -58,12 +56,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query(connection, query);
+            var result = Queries.Queries.Query(_npgSqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
 
@@ -72,7 +69,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -80,12 +77,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = Queries.Queries.Query(_npgSqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().mobilenumber;
 
@@ -94,7 +90,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -102,12 +98,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query(connection, query);
+            var result = Queries.Queries.Query(_mySqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
 
@@ -116,7 +111,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -124,12 +119,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = Queries.Queries.Query(_mySqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
 
@@ -138,7 +132,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
         #endregion
 
@@ -148,12 +142,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query);
+            var result = Queries.Queries.Query<DailyCustomerPayments>(_sqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
             var type = result.First();
@@ -164,7 +157,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -172,12 +165,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _sqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _sqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = Queries.Queries.Query<DailyCustomerPayments>(_sqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.First();
@@ -188,7 +180,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _sqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -196,12 +188,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query);
+            var result = Queries.Queries.Query<DailyCustomerPayments>(_npgSqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
             var type = result.First();
@@ -212,7 +203,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -220,12 +211,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _npgSqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _npgSqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = Queries.Queries.Query<DailyCustomerPayments>(_npgSqlConnection, query, new { MobileNumber = data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.First();
@@ -235,7 +225,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.Equal(expected, actual);
             Assert.IsType<DailyCustomerPayments>(type);
             //Clean
-            connection.Execute(_truncateQuery);
+            _npgSqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -243,12 +233,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query);
+            var result = Queries.Queries.Query<DailyCustomerPayments>(_mySqlConnection, query);
             var expected = data.Count();
             var actual = result.Count();
             var type = result.FirstOrDefault();
@@ -259,7 +248,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
 
         [Fact]
@@ -267,12 +256,11 @@ namespace LaRoy.ORM.Tests.QueriesTests
         {
             //Arrange
             var data = GenerateTestData(10)!;
-            var connection = _mySqlConnection;
             var query = @"SELECT * FROM DailyCustomerPayments WHERE MobileNumber = @MobileNumber";
-            connection.BulkInsert(data);
+            _mySqlConnection.BulkInsert(data);
 
             //Act
-            var result = Queries.Queries.Query<DailyCustomerPayments>(connection, query, new { MobileNumber = data.First().MobileNumber });
+            var result = Queries.Queries.Query<DailyCustomerPayments>(_mySqlConnection, query, new { data.First().MobileNumber });
             var expected = data.First().MobileNumber;
             var actual = result.First().MobileNumber;
             var type = result.FirstOrDefault();
@@ -283,7 +271,7 @@ namespace LaRoy.ORM.Tests.QueriesTests
             Assert.IsType<DailyCustomerPayments>(type);
 
             //Clean
-            connection.Execute(_truncateQuery);
+            _mySqlConnection.Execute(_truncateQuery);
         }
         #endregion
 
