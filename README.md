@@ -79,7 +79,7 @@ var dataToUpdate = List<YourEntity>
 connection.BulkUpdate(dataToUpdate);
 ```
 
-2. BulkUpdate
+2. BulkDelete
 ```cs
 //Arrange IEnumerable data to delete
 var dataToDelete= List<YourEntity>
